@@ -19,7 +19,7 @@ services:
     container_name: ekoservice_postgres
     restart: unless-stopped
     ports:
-      - "5432:5432"
+      - "127.0.0.1:5432:5432"
     environment:
       POSTGRES_DB: eko_service
       POSTGRES_USER: ${POSTGRES_USER:-eko_service}
@@ -46,17 +46,22 @@ services:
     container_name: ekoservice_redis
     restart: unless-stopped
     ports:
-      - "6379:6379"
-    command: >
-      redis-server
-      --requirepass ${REDIS_PASSWORD:-redis_pass_prod}
-      --maxmemory 256mb
-      --maxmemory-policy allkeys-lru
-      --appendonly yes
+      - "127.0.0.1:6379:6379"
+    environment:
+      REDIS_PASSWORD: ${REDIS_PASSWORD:-redis_pass_prod}
+    command:
+      - sh
+      - -c
+      - >
+        redis-server
+        --requirepass "$$REDIS_PASSWORD"
+        --maxmemory 256mb
+        --maxmemory-policy allkeys-lru
+        --appendonly yes
     volumes:
       - redis_data:/data
     healthcheck:
-      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
+      test: ["CMD-SHELL", "redis-cli -a \"$${REDIS_PASSWORD}\" ping | grep PONG"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -75,7 +80,10 @@ services:
     environment:
       NODE_ENV: production
       DATABASE_URL: postgresql://${POSTGRES_USER:-eko_service}:${POSTGRES_PASSWORD:-eko_pass_prod}@postgres:5432/eko_service
-      REDIS_URL: redis://:${REDIS_PASSWORD:-redis_pass_prod}@redis:6379/0
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      REDIS_PASSWORD: ${REDIS_PASSWORD:-redis_pass_prod}
+      REDIS_DB: 0
     ports:
       - "3000:3000"
     depends_on:
@@ -84,7 +92,7 @@ services:
       redis:
         condition: service_healthy
     healthcheck:
-      test: ["CMD", "wget", "-qO-", "http://localhost:3000/health"]
+      test: ["CMD-SHELL", "node -e \"fetch('http://127.0.0.1:3000/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))\""]
       interval: 15s
       timeout: 5s
       retries: 5
