@@ -73,7 +73,7 @@ const gambarSertifikat = [
   { judul: 'Sertifikat 3', src: '/img/certificate-3.jpeg' }
 ];
 
-const tombolLanding = 'inline-flex min-w-[140px] justify-center md:min-w-[180px]';
+const tombolLanding = 'inline-flex w-full justify-center sm:w-auto sm:min-w-[140px] md:min-w-[180px]';
 const lokasiEkoService = { lat: -6.2028941, lng: 106.9399847 };
 const linkMaps =
   'https://www.google.com/maps/place/Eko+Service+Kulkas+Mesincuci+AC/@-6.2413982,106.7633447,12z/data=!4m8!3m7!1s0x21c16483fa5e98eb:0x7de77a808f02e099!8m2!3d-6.2028941!4d106.9399847!9m1!1b1!16s%2Fg%2F11stpjqjpf?entry=ttu&g_ep=EgoyMDI2MDUyNS4wIKXMDSoASAFQAw%3D%3D';
@@ -111,9 +111,9 @@ export const Landing = () => {
   return (
     <div className="min-h-screen bg-latar text-teks">
       <nav className="sticky top-0 z-20 border-b border-borderHalus bg-latar">
-        <ContainerPublik className="flex h-16 items-center justify-between gap-4">
+        <ContainerPublik className="flex h-14 items-center justify-between gap-3 md:h-16 md:gap-4">
           <div className="flex items-center gap-6 md:gap-8">
-            <div className="flex items-center gap-3">
+            <div className="flex min-w-0 items-center gap-2 md:gap-3">
               {logoError ? (
                 <span className="inline-flex h-8 w-8 items-center justify-center rounded bg-section text-xs font-semibold text-utama">
                   ES
@@ -227,13 +227,13 @@ export const Landing = () => {
 
       <section
         id="fitur"
-        className="relative min-h-[75vh] overflow-hidden bg-cover bg-center"
+        className="relative min-h-[68vh] overflow-hidden bg-cover bg-center md:min-h-[75vh]"
         style={{ backgroundImage: "url('/img/bg-hero.jpg')" }}
       >
         <div className="absolute inset-0 bg-gradient-to-b from-[#07090c]/80 via-[#0A0A0A]/72 via-58% to-[#0A0A0A]/90" />
         <div className="absolute inset-x-0 bottom-0 h-[18rem] bg-gradient-to-b from-transparent via-[#07090c]/90 to-[#0A0A0A]" />
-        <ContainerPublik className="relative z-10 flex min-h-[75vh] items-center justify-center pb-4 pt-6">
-          <div className="space-y-6 text-center">
+        <ContainerPublik className="relative z-10 flex min-h-[68vh] items-center justify-center pb-5 pt-5 md:min-h-[75vh] md:pb-4 md:pt-6">
+          <div className="w-full space-y-5 text-center md:space-y-6">
             <h1
               data-hero-motion
               className="hero-title-utama mx-auto max-w-5xl font-semibold"
@@ -246,7 +246,7 @@ export const Landing = () => {
               data-hero-motion="3"
               className="flex justify-center gap-3 pt-1"
             >
-              <Link to="/booking">
+              <Link to="/booking" className="w-full sm:w-auto">
                 <Tombol className={`btn-bounce ${tombolLanding}`}>
                   Booking Sekarang
                 </Tombol>
@@ -259,7 +259,7 @@ export const Landing = () => {
       <SectionWrapper>
         <ContainerPublik>
           <section className="space-y-6" id="ringkasan" data-reveal>
-            <div className="kartu rounded-none p-6">
+            <div className="kartu rounded-none p-4 md:p-6">
               <h3 className="ringkasan-title text-center">
                 Mengapa Memilih Kami
               </h3>
@@ -378,7 +378,7 @@ export const Landing = () => {
             <h2 className="text-xl font-semibold">Testimoni Pengguna</h2>
             <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
               {testimoni.map((item) => (
-                <div key={item.nama} className="kartu rounded-none p-6">
+                <div key={item.nama} className="kartu rounded-none p-4 md:p-6">
                   <p className="text-sm text-teks2">"{item.isi}"</p>
                   <div className="mt-4 flex items-center gap-3">
                     <img
@@ -408,6 +408,7 @@ export const Landing = () => {
                 href="https://www.google.com/maps/place/Eko+Service+Kulkas+Mesincuci+AC/@-6.2413982,106.7633447,12z/data=!4m8!3m7!1s0x21c16483fa5e98eb:0x7de77a808f02e099!8m2!3d-6.2028941!4d106.9399847!9m1!1b1!16s%2Fg%2F11stpjqjpf?entry=ttu&g_ep=EgoyMDI2MDUyNS4wIKXMDSoASAFQAw%3D%3D"
                 target="_blank"
                 rel="noreferrer"
+                className="w-full sm:w-auto"
               >
                 <Tombol
                   className={`btn-bounce bg-section text-white ${tombolLanding}`}
@@ -425,7 +426,7 @@ export const Landing = () => {
           <section className="space-y-6" id="tentang" data-reveal>
             <h2 className="text-xl font-semibold">Tentang Perusahaan</h2>
             <div className="grid gap-5 md:grid-cols-[1.2fr_0.8fr]">
-              <div className="kartu rounded-none p-6">
+              <div className="kartu rounded-none p-4 md:p-6">
                 <p className="text-sm text-teks2">
                   Eko Service adalah usaha jasa service elektronik panggilan di
                   Jakarta yang sudah berpengalaman dalam menangani berbagai
@@ -439,7 +440,7 @@ export const Landing = () => {
                   serta melayani konsumen dari berbagai kalangan.
                 </p>
               </div>
-              <div className="kartu rounded-none p-6 text-sm space-y-1">
+              <div className="kartu rounded-none p-4 text-sm space-y-1 md:p-6">
                 <div className="panel-kompak p-4 space-y-0.5">
                   <p className="text-teks2">Sudah Tanggani</p>
                   <p
@@ -506,7 +507,7 @@ export const Landing = () => {
                 withCard={false}
               />
               <div className="flex justify-end">
-                <a href={linkMaps} target="_blank" rel="noreferrer">
+                <a href={linkMaps} target="_blank" rel="noreferrer" className="w-full sm:w-auto">
                   <Tombol
                     className={`btn-bounce bg-section text-white ${tombolLanding}`}
                   >
@@ -522,15 +523,15 @@ export const Landing = () => {
       <SectionWrapper>
         <ContainerPublik>
           <section className="space-y-8 pb-6" data-reveal>
-            <div className="kartu rounded-none p-7 text-center">
+            <div className="kartu rounded-none p-5 text-center md:p-7">
               <h3 className="cta-title">Butuh Service Cepat dan Murah?</h3>
               <p className="mt-3 text-sm text-teks2">
                 Solusi cepat dan hemat untuk service Anda. Hanya dengan harga
-                jasa mulai dari Rp 70 ribu hingga Rp 150 ribu, <br />
+                jasa mulai dari Rp 70 ribu hingga Rp 150 ribu, <br className="hidden md:block" />
                 teknisi kami siap melayani langsung ke lokasi Anda!
               </p>
               <div className="mt-5 flex justify-center gap-3 flex-wrap">
-                <Link to="/booking">
+                <Link to="/booking" className="w-full sm:w-auto">
                   <Tombol className={`btn-bounce ${tombolLanding}`}>
                     Mulai Booking
                   </Tombol>
@@ -568,6 +569,7 @@ export const Landing = () => {
                 href="https://www.google.com/maps/place/Eko+Service+Kulkas+Mesincuci+AC/@-6.2413982,106.7633447,12z/data=!4m8!3m7!1s0x21c16483fa5e98eb:0x7de77a808f02e099!8m2!3d-6.2028941!4d106.9399847!9m1!1b1!16s%2Fg%2F11stpjqjpf?entry=ttu&g_ep=EgoyMDI2MDUyNS4wIKXMDSoASAFQAw%3D%3D"
                 target="_blank"
                 rel="noreferrer"
+                className="w-full sm:w-auto"
               >
                 <Tombol
                   className={`btn-bounce bg-section text-white ${tombolLanding}`}

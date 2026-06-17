@@ -146,7 +146,7 @@ export default function HalamanKeuangan() {
         <div className="flex items-center gap-2">
           <Tombol
             onClick={handleExport}
-            className="h-9 w-36 px-4 py-0"
+            className="h-9 w-28 px-3 py-0 sm:w-36 sm:px-4"
           >
             Export PDF
           </Tombol>
@@ -159,8 +159,8 @@ export default function HalamanKeuangan() {
         </div>
       }
       searchSlot={
-        <div className="flex items-center gap-3 flex-1">
-          <div className="relative flex-1">
+        <div className="flex flex-1 flex-col gap-2 sm:flex-row sm:items-center sm:gap-3">
+          <div className="relative w-full sm:flex-1">
             <Search size={18} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-redup" />
             <input
               type="text"
@@ -170,12 +170,12 @@ export default function HalamanKeuangan() {
               onChange={(e) => setSearch(e.target.value)}
             />
           </div>
-          <FormSelect className="w-36" value={filterJenis} onChange={(e) => setFilterJenis(e.target.value)}>
+          <FormSelect className="w-full sm:w-36" value={filterJenis} onChange={(e) => setFilterJenis(e.target.value)}>
             <option value="">Semua</option>
             <option value="MASUK">Pemasukan</option>
             <option value="KELUAR">Pengeluaran</option>
           </FormSelect>
-          <FormSelect className="w-36" value={exportRange} onChange={(e) => setExportRange(e.target.value as ExportRange)}>
+          <FormSelect className="w-full sm:w-36" value={exportRange} onChange={(e) => setExportRange(e.target.value as ExportRange)}>
             <option value="semua">Semua</option>
             <option value="minggu">Mingguan</option>
             <option value="bulan">Bulanan</option>
@@ -195,7 +195,7 @@ export default function HalamanKeuangan() {
             <p className="text-sm text-bahaya">Gagal memuat data transaksi</p>
           </div>
         ) : (
-          <table className="w-full text-sm table-fixed">
+          <table className="min-w-[720px] text-sm table-fixed md:w-full">
             <colgroup>
               <col className="w-1/4" />
               <col className="w-1/4" />

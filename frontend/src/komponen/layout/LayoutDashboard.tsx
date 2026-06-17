@@ -34,8 +34,8 @@ export const LayoutDashboard = ({ children, judulHalaman, showTambah, onTambah, 
 
         <div className="flex flex-1 flex-col min-w-0 lg:pl-60">
           {/* Topbar */}
-          <nav className="sticky top-0 z-10 flex h-16 shrink-0 items-center border-b border-borderHalus bg-panel">
-            <div className="flex items-center gap-3 w-full px-4 md:px-5">
+          <nav className="sticky top-0 z-10 flex min-h-16 shrink-0 items-center border-b border-borderHalus bg-panel lg:h-16">
+            <div className="flex w-full flex-wrap items-center gap-2 px-3 py-3 md:px-5 lg:flex-nowrap lg:gap-3 lg:py-0">
               <button
                 type="button"
                 onClick={() => setSidebarOpen(true)}
@@ -47,7 +47,7 @@ export const LayoutDashboard = ({ children, judulHalaman, showTambah, onTambah, 
                 <p className="brand-text font-semibold shrink-0">{judulHalaman}</p>
               )}
               {searchSlot && (
-                <div className="flex-1 min-w-0">{searchSlot}</div>
+                <div className="order-last w-full flex-none lg:order-none lg:min-w-0 lg:flex-1">{searchSlot}</div>
               )}
               {showTambah && (
                 <button
@@ -57,10 +57,10 @@ export const LayoutDashboard = ({ children, judulHalaman, showTambah, onTambah, 
                   <Plus size={20} />
                 </button>
               )}
-              {actionsSlot}
+              {actionsSlot && <div className="shrink-0">{actionsSlot}</div>}
             </div>
           </nav>
-          <div className="flex-1 overflow-y-auto px-4 py-4 space-y-4 md:px-5 md:py-5">
+          <div className="flex-1 overflow-y-auto px-3 py-3 space-y-3 md:px-5 md:py-5 md:space-y-4">
             {children}
           </div>
         </div>

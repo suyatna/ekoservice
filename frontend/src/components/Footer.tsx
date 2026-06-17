@@ -8,9 +8,9 @@ const Footer = () => {
   return (
     <footer className="bg-[#161616] text-white">
       {/* Main Content */}
-      <div className="mx-auto w-full max-w-7xl px-4 sm:px-5 md:px-8 lg:px-10 xl:px-12 py-8">
+      <div className="mx-auto w-full max-w-7xl px-4 py-7 sm:px-5 md:px-8 md:py-8 lg:px-10 xl:px-12">
         {/* Row: Logo, Menu, Social */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 md:gap-8">
+        <div className="flex flex-col items-center justify-between gap-5 text-center md:flex-row md:items-center md:gap-8 md:text-left">
           {/* Logo & Brand */}
           <div className="flex items-center gap-3">
             {logoError ? (
@@ -22,7 +22,7 @@ const Footer = () => {
           </div>
 
           {/* Menu Links */}
-          <nav className="flex flex-wrap justify-center gap-5 text-sm text-teks2">
+          <nav className="flex flex-wrap justify-center gap-x-4 gap-y-2 text-sm text-teks2 md:gap-5">
             <a href="#fitur" className="hover:text-teks transition-colors duration-200">Beranda</a>
             <a href="#testimoni" className="hover:text-teks transition-colors duration-200">Testimoni</a>
             <a href="#tentang" className="hover:text-teks transition-colors duration-200">Tentang</a>
@@ -30,7 +30,7 @@ const Footer = () => {
           </nav>
 
           {/* Social Icons */}
-          <div className="flex items-center gap-5">
+          <div className="flex items-center justify-center gap-5">
             <a href="#" className="text-redup hover:text-teks transition-colors duration-200">
               <Facebook size={20} />
             </a>

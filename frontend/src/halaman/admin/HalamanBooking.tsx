@@ -129,8 +129,8 @@ export default function HalamanBooking() {
       showTambah
       onTambah={() => setBarisBaru(kosongBooking())}
       searchSlot={
-        <div className="flex items-center gap-3 flex-1">
-          <div className="relative flex-1">
+        <div className="flex flex-1 flex-col gap-2 sm:flex-row sm:items-center sm:gap-3">
+          <div className="relative w-full sm:flex-1">
             <Search size={18} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-redup" />
             <input
               type="text"
@@ -140,13 +140,13 @@ export default function HalamanBooking() {
               onChange={(e) => setSearch(e.target.value)}
             />
           </div>
-          <FormSelect className="w-36" value={filterStatus} onChange={(e) => setFilterStatus(e.target.value)}>
+          <FormSelect className="w-full sm:w-36" value={filterStatus} onChange={(e) => setFilterStatus(e.target.value)}>
             <option value="">Semua</option>
             {STATUS_GROUPS.map((g) => (
               <option key={g} value={g}>{getGroupLabel(g)}</option>
             ))}
           </FormSelect>
-          <FormSelect className="w-36" value={filterKategori} onChange={(e) => setFilterKategori(e.target.value)}>
+          <FormSelect className="w-full sm:w-36" value={filterKategori} onChange={(e) => setFilterKategori(e.target.value)}>
             <option value="">Semua</option>
             {ALL_KATEGORI.map((k) => (
               <option key={k} value={k}>{kategoriOptions[k]}</option>
@@ -171,7 +171,7 @@ export default function HalamanBooking() {
             <p className="text-sm text-teks2">Tidak ada booking ditemukan</p>
           </div>
         ) : (
-          <table className="w-full text-sm table-fixed">
+          <table className="min-w-[760px] text-sm table-fixed md:w-full">
             <colgroup>
               <col className="w-1/5" />
               <col className="w-1/5" />

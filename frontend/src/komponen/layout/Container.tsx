@@ -14,5 +14,5 @@ export const ContainerForm = ({ children, className }: { children: ReactNode; cl
 );
 
 export const SectionWrapper = ({ children, className }: { children: ReactNode; className?: string }) => (
-  <section className={cn('py-10 md:py-12 lg:py-14', className)}>{children}</section>
+  <section className={cn('py-8 md:py-12 lg:py-14', className)}>{children}</section>
 );

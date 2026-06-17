@@ -11,18 +11,18 @@ const BookingPublik = () => {
   const tombolLanding = 'inline-flex w-full justify-center';
 
   return (
-    <div className="h-screen bg-latar text-teks overflow-hidden">
-      <ContainerPublik className="flex h-full flex-col">
-        <div className="pt-8">
+    <div className="min-h-screen bg-latar text-teks">
+      <ContainerPublik className="flex min-h-screen flex-col">
+        <div className="pt-5 md:pt-8">
           <button type="button" onClick={() => nav('/')} className="inline-flex items-center gap-2 text-sm text-redup hover:text-teks">
             <ArrowLeft size={18} />
             Kembali
           </button>
         </div>
 
-        <div className="flex flex-1 items-center justify-center py-8">
+        <div className="flex flex-1 items-center justify-center py-6 md:py-8">
           <div className="w-full max-w-xl px-4 sm:px-0">
-            <div className="kartu rounded-none space-y-4 p-6 md:p-8 text-center">
+            <div className="kartu rounded-none space-y-4 p-5 text-center md:p-8">
               <img src="/img/logo-whatsapp.png" alt="WhatsApp" className="mx-auto h-12 w-12" />
               <h3 className="ringkasan-title">Booking Service</h3>
               <p className="text-sm text-teks2" style={{ fontFamily: "'Farro', sans-serif", textTransform: 'none' }}>
@@ -30,7 +30,7 @@ const BookingPublik = () => {
               </p>
 
               <div className="panel-kompak p-4">
-                <div className="flex items-center justify-center gap-2">
+                <div className="flex flex-col items-center justify-center gap-2 sm:flex-row">
                   <Phone size={16} className="text-utama" />
                   <span className="nomor-wa">Nomor Admin: 0857-7221-9292</span>
                 </div>
