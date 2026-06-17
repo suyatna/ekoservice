@@ -262,8 +262,8 @@ function TransaksiRow({ transaksi, ubahMutation, hapusMutation }: { transaksi: a
     const nextNominal = patch?.nominal ?? nominal;
     const nextTgl = patch?.tgl ?? tgl;
 
-    // Jika semua field kosong → hapus
-    if (nextDeskripsi.trim() === '' && nextNominal.trim() === '' && nextTgl === '') {
+    // Jika salah satu field utama dikosongkan, hapus baris.
+    if (nextDeskripsi.trim() === '' || nextNominal.trim() === '' || nextTgl === '') {
       hapusMutation.mutate(transaksi.id);
       return;
     }

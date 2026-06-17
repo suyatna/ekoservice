@@ -251,8 +251,8 @@ function BookingRow({ booking, ubahMutation, hapusMutation }: { booking: any; ub
     const nextNoTelp = patch?.noTelp ?? noTelp;
     const nextStatusGroup = patch?.statusGroup ?? statusGroup;
 
-    // Jika semua field kosong → hapus
-    if (nextNama.trim() === '' && nextTglBooking === '' && nextNoTelp.trim() === '') {
+    // Jika salah satu field utama dikosongkan, hapus baris.
+    if (nextNama.trim() === '' || nextTglBooking === '' || nextNoTelp.trim() === '') {
       hapusMutation.mutate(booking.id);
       return;
     }

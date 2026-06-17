@@ -22,6 +22,7 @@ export const skemaTransaksiUbah = z.object({
   jenis: z.enum(['MASUK', 'KELUAR']).optional(),
   nominal: z.number().min(0).optional(),
   metodeBayar: z.string().optional().nullable(),
+  dibuatDi: z.string().optional(),
 });
 
 export type TransaksiFilter = z.infer<typeof skemaTransaksiFilter>;

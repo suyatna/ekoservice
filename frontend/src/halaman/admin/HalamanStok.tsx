@@ -130,9 +130,9 @@ export default function HalamanStok() {
             </colgroup>
             <thead>
               <tr className="border-b border-[#2D2D2D]">
-                <th className="px-4 py-3 text-center text-xs font-semibold uppercase bg-utama text-black">Nama</th>
+                <th className="px-4 py-3 text-center text-xs font-semibold uppercase bg-utama text-black">Nama Sparepart</th>
                 <th className="px-4 py-3 text-center text-xs font-semibold uppercase bg-utama text-black">Kategori</th>
-                <th className="px-4 py-3 text-center text-xs font-semibold uppercase bg-utama text-black">Stok</th>
+                <th className="px-4 py-3 text-center text-xs font-semibold uppercase bg-utama text-black">Jumlah Stok</th>
                 <th className="px-4 py-3 text-center text-xs font-semibold uppercase bg-utama text-black">Satuan</th>
               </tr>
             </thead>
@@ -193,8 +193,8 @@ function SparepartRow({ sparepart, ubahMutation, hapusMutation }: { sparepart: a
     const nextStok = patch?.stok ?? stok;
     const nextSatuan = patch?.satuan ?? satuan;
 
-    // Jika semua field kosong → hapus
-    if (nextNama.trim() === '' && nextStok.trim() === '' && nextSatuan.trim() === '') {
+    // Jika salah satu field utama dikosongkan, hapus baris.
+    if (nextNama.trim() === '' || nextStok.trim() === '' || nextSatuan.trim() === '') {
       hapusMutation.mutate(sparepart.id);
       return;
     }
@@ -205,12 +205,6 @@ function SparepartRow({ sparepart, ubahMutation, hapusMutation }: { sparepart: a
     if (nextKategori !== '') data.kategori = nextKategori;
     if (nextStok.trim() !== '') data.stok = Number(nextStok);
     if (nextSatuan.trim() !== '') data.satuan = nextSatuan;
-
-    // Jika tidak ada field yang terisi → hapus
-    if (Object.keys(data).length === 0) {
-      hapusMutation.mutate(sparepart.id);
-      return;
-    }
 
     ubahMutation.mutate({ id: sparepart.id, data });
   };
