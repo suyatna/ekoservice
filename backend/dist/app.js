@@ -1,0 +1,101 @@
+import * as FastifyNS from 'fastify';
+import { config } from './config/index.js';
+import { requestContextPlugin } from './plugins/request-context.js';
+import { helmetPlugin } from './plugins/helmet.js';
+import { corsPlugin } from './plugins/cors.js';
+import { rateLimitPlugin } from './plugins/rate-limit.js';
+import { jwtPlugin } from './plugins/auth.js';
+import { createVerifier } from 'fast-jwt';
+import cookie from '@fastify/cookie';
+import { auditPlugin } from './middleware/audit-log.js';
+import { validateApiKey } from './middleware/validate-api-key.js';
+import { authRoutes } from './modules/auth/auth.routes.js';
+import { bookingRoutes } from './modules/booking/booking.routes.js';
+import { transaksiRoutes } from './modules/transaksi/transaksi.routes.js';
+import { sparepartRoutes } from './modules/sparepart/sparepart.routes.js';
+import { dashboardRoutes } from './modules/dashboard/dashboard.routes.js';
+import { fail } from './shared/response.js';
+import { serializeError } from './shared/errors.js';
+import { allowedOrigins } from './config/index.js';
+const Fastify = FastifyNS.default ?? FastifyNS;
+export async function buildApp() {
+    const fastify = Fastify({
+        logger: { level: config.LOG_LEVEL },
+        requestIdHeader: 'x-request-id',
+        disableRequestLogging: false,
+    });
+    await fastify.register(cookie);
+    await fastify.register(requestContextPlugin);
+    await fastify.register(helmetPlugin);
+    await fastify.register(corsPlugin);
+    await fastify.register(rateLimitPlugin);
+    await fastify.register(jwtPlugin);
+    const jwtVerifier = createVerifier({ key: config.JWT_SECRET, algorithms: ['HS512'] });
+    await fastify.register(auditPlugin);
+    // Health check (public)
+    fastify.get('/health', async (request) => ({
+        status: 'ok',
+        timestamp: new Date().toISOString(),
+        uptime: process.uptime(),
+        version: '1.0.0',
+        requestId: request.requestId,
+    }));
+    // Global preHandler: API Key validation
+    fastify.addHook('preHandler', async (request, reply) => {
+        if (request.url === '/health')
+            return;
+        // CSRF check: state-changing methods require valid Origin header
+        const method = request.method;
+        if (['POST', 'PUT', 'PATCH', 'DELETE'].includes(method)) {
+            const origin = request.headers['origin'];
+            if (origin && !allowedOrigins.includes(origin)) {
+                reply.code(403).send(fail('Origin tidak diizinkan', 'FORBIDDEN', request.requestId));
+                return;
+            }
+        }
+        await validateApiKey(request, reply);
+    });
+    // Global preHandler: JWT authentication
+    fastify.addHook('preHandler', async (request, reply) => {
+        const skip = ['/health', '/auth/login', '/auth/register', '/auth/refresh', '/auth/logout'];
+        if (skip.some((p) => request.url.startsWith(p)))
+            return;
+        try {
+            const authHeader = request.headers['authorization'];
+            if (!authHeader || !authHeader.startsWith('Bearer '))
+                throw new Error('No token');
+            const token = authHeader.slice(7);
+            const payload = jwtVerifier(token);
+            request.user = payload;
+        }
+        catch {
+            reply.code(401).send(fail('Token tidak valid atau sudah kadaluarsa', 'UNAUTHORIZED', request.requestId));
+        }
+    });
+    fastify.setErrorHandler((error, request, reply) => {
+        fastify.log.error({ requestId: request.requestId, err: serializeError(error), url: request.url });
+        if (error.validation) {
+            return reply.code(400).send(fail(error.validation[0]?.message ?? 'Validasi gagal', 'VALIDATION_ERROR', request.requestId));
+        }
+        if (error.code) {
+            return reply.code(error.statusCode ?? 500).send(fail(error.publicMessage ?? error.message, error.code, request.requestId));
+        }
+        return reply.code(500).send(fail('Terjadi kesalahan pada sistem', 'INTERNAL_ERROR', request.requestId));
+    });
+    fastify.setNotFoundHandler((request, reply) => {
+        reply.code(404).send(fail('Endpoint tidak ditemukan', 'NOT_FOUND', request.requestId));
+    });
+    await fastify.register(authRoutes, { prefix: '/auth' });
+    await fastify.register(bookingRoutes, { prefix: '/booking' });
+    await fastify.register(transaksiRoutes, { prefix: '/transaksi' });
+    await fastify.register(sparepartRoutes, { prefix: '/sparepart' });
+    await fastify.register(dashboardRoutes, { prefix: '/dashboard' });
+    fastify.addHook('onReady', async () => {
+        fastify.log.info(`🚀 ${config.APP_NAME} ready on port ${config.PORT}`);
+        fastify.log.info(`📦 Environment: ${config.NODE_ENV}`);
+        fastify.log.info(`🔒 Rate limiting: ${config.ENABLE_RATE_LIMIT ? 'ON' : 'OFF'}`);
+        fastify.log.info(`📝 Audit logging: ${config.ENABLE_AUDIT_LOG ? 'ON' : 'OFF'}`);
+    });
+    return fastify;
+}
+//# sourceMappingURL=app.js.map

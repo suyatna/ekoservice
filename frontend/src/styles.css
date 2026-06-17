@@ -1,0 +1,404 @@
+@import url('https://fonts.googleapis.com/css2?family=Farro&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Koulen&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+  --fs-xs: 0.75rem;
+  --fs-sm: 0.88rem;
+  --fs-base: 0.95rem;
+  --fs-lg: 1.08rem;
+  --fs-xl: 1.2rem;
+}
+
+html {
+  font-size: 18px;
+  scroll-padding-top: 84px;
+}
+
+body {
+  font-family: 'Farro', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  @apply bg-latar text-teks;
+  zoom: 0.9;
+}
+
+input,
+select,
+textarea,
+option {
+  font-family: 'Farro', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+button,
+.subtitle,
+.subjudul {
+  font-family: 'Koulen', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+}
+
+strong,
+b,
+.font-semibold,
+.font-bold,
+.font-extrabold {
+  font-family: 'Koulen', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  font-size: 1.16em;
+  text-transform: uppercase;
+}
+
+h1 {
+  font-size: clamp(2.35rem, 5.4vw, 3.55rem) !important;
+  line-height: 1.05 !important;
+}
+
+h2 {
+  font-size: clamp(2rem, 3.95vw, 2.8rem) !important;
+  line-height: 1.08 !important;
+}
+
+h3 {
+  font-size: clamp(1.5rem, 2.85vw, 1.95rem) !important;
+  line-height: 1.1 !important;
+}
+
+h2.text-xl {
+  font-size: clamp(1.95rem, 3.9vw, 2.75rem) !important;
+}
+
+h3.text-xl {
+  font-size: clamp(1.72rem, 3.15vw, 2.1rem) !important;
+}
+
+.ringkasan-title {
+  font-size: clamp(1.95rem, 3.6vw, 2.45rem) !important;
+  line-height: 1.1 !important;
+}
+
+.cta-title {
+  font-size: clamp(1.95rem, 3.6vw, 2.45rem) !important;
+  line-height: 1.08 !important;
+}
+
+#ringkasan .ringkasan-title,
+.cta-title,
+.brand-text {
+  font-family: 'Koulen', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif !important;
+  text-transform: uppercase !important;
+}
+
+#ringkasan .ringkasan-title,
+.cta-title {
+  font-size: clamp(1.95rem, 3.6vw, 2.45rem) !important;
+  line-height: 1.08 !important;
+  font-weight: 700 !important;
+}
+
+.brand-text {
+  font-size: 1.55rem !important;
+  line-height: 1.05 !important;
+  font-weight: 700 !important;
+}
+
+
+.subtitle,
+.subjudul {
+  font-size: clamp(1.12rem, 2.2vw, 1.5rem) !important;
+  line-height: 1.15 !important;
+}
+
+button {
+  font-size: 1.08rem !important;
+}
+
+.hero-title {
+  font-size: clamp(2.3rem, 5.3vw, 3.45rem) !important;
+}
+
+.text-xs {
+  font-size: var(--fs-xs) !important;
+}
+
+.text-sm {
+  font-size: var(--fs-sm) !important;
+}
+
+.text-base {
+  font-size: var(--fs-base) !important;
+}
+
+.text-lg {
+  font-size: var(--fs-lg) !important;
+}
+
+.text-xl {
+  font-size: var(--fs-xl) !important;
+}
+
+.kartu .font-semibold,
+.kartu strong,
+.kartu b,
+.panel-kompak .font-semibold,
+.panel-kompak strong,
+.panel-kompak b {
+  font-size: 1.16rem !important;
+}
+
+/* heading & label di dalam kartu: Vina Sans uppercase */
+.kartu h1, .kartu h2, .kartu h3, .kartu h4,
+.kartu h5, .kartu h6,
+.kartu .font-semibold,
+.kartu strong,
+.kartu b,
+.kartu .subtitle,
+.kartu .subjudul,
+.kartu .text-xs,
+.kartu .panel-kompak .text-sm {
+  font-family: 'Koulen', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif !important;
+  text-transform: uppercase !important;
+}
+
+/* body text di dalam kartu: Farro normal */
+.kartu p,
+.kartu li,
+.kartu span,
+.kartu a,
+.kartu td,
+.kartu div:not(.kartu):not(.panel-kompak):not([class*="space-y"]):not([class*="grid"]) {
+  font-family: 'Farro', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif !important;
+  text-transform: none !important;
+}
+
+/* table styling */
+table thead th {
+  font-family: 'Koulen', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif !important;
+  text-transform: uppercase !important;
+}
+
+table tbody td,
+table tbody p,
+table tbody span {
+  font-family: 'Farro', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif !important;
+  text-transform: none !important;
+}
+
+button {
+  font-size: 1.08rem !important;
+}
+
+* {
+  outline: none !important;
+}
+
+/* Semua elemen dengan class border di-reset, kecuali form inputs */
+[class*='border']:not(input):not(select):not(textarea):not([contenteditable]) {
+  border-width: 0 !important;
+}
+
+/* Form inputs override — dapat border */
+input[class*='border'],
+select[class*='border'],
+textarea[class*='border'],
+[contenteditable][class*='border'] {
+  border-width: 1px !important;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="date"],
+input[type="number"],
+textarea,
+select {
+  border: 1px solid #3D3D3D !important;
+}
+
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus,
+input[type="date"]:focus,
+input[type="number"]:focus,
+textarea:focus,
+select:focus {
+  border-color: #22C55E !important;
+}
+
+.kartu {
+  @apply rounded-lg bg-panel;
+}
+
+.panel-kompak {
+  @apply rounded-md bg-section;
+}
+
+[data-lucide] {
+  width: 16px;
+  height: 16px;
+  stroke-width: 2.1;
+}
+
+@keyframes softPulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.02);
+  }
+}
+
+[data-hero-motion] {
+  opacity: 0;
+  transform: translateY(18px);
+  animation: heroRise 760ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+[data-hero-motion='2'] {
+  animation-delay: 120ms;
+}
+
+[data-hero-motion='3'] {
+  animation-delay: 220ms;
+}
+
+@keyframes heroRise {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+[data-reveal],
+[data-reveal-auto] {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 620ms cubic-bezier(0.22, 1, 0.36, 1), transform 620ms cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+[data-reveal].revealed,
+[data-reveal-auto].revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.btn-bounce:hover {
+  animation: softPulse 520ms ease;
+}
+
+.galeri-item {
+  position: relative;
+  overflow: hidden;
+  border-radius: 0.5rem !important;
+}
+
+.galeri-item img {
+  border-radius: 0.5rem !important;
+}
+
+.galeri-item::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(110deg, transparent 30%, rgba(255, 255, 255, 0.18) 50%, transparent 70%);
+  transform: translateX(-140%);
+  transition: transform 680ms ease;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.galeri-item:hover::before {
+  transform: translateX(140%);
+}
+
+.galeri-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.32);
+  opacity: 0;
+  transition: opacity 260ms ease;
+  z-index: 2;
+}
+
+.galeri-item:hover .galeri-overlay {
+  opacity: 1;
+}
+
+.kartu .galeri-cta {
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  border-radius: 10px;
+  padding: 8px 14px;
+  font-size: 1.08rem !important;
+  font-family: 'Koulen', sans-serif !important;
+  text-transform: uppercase !important;
+  color: #fff;
+  background: rgba(9, 12, 16, 0.72);
+}
+
+/* Force ukuran teks semua tombol konsisten seperti landing page */
+button,
+button.text-xs,
+button.text-sm,
+button.text-base,
+button.text-lg,
+button.text-xl {
+  font-size: 1.08rem !important;
+  border-radius: 9999px !important;
+}
+
+.estimasi-heading {
+  font-family: 'Koulen', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif !important;
+  text-transform: uppercase !important;
+  font-size: 1.85rem !important;
+  line-height: 1.08 !important;
+}
+
+.hero-title-utama {
+  font-family: 'Koulen', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif !important;
+  text-transform: uppercase !important;
+  font-size: clamp(2.6rem, 6vw, 3.95rem) !important;
+  line-height: 1.08 !important;
+}
+
+@keyframes heroFadeIn {
+  0% { opacity: 0; transform: translateY(20px) scale(0.95); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes heroFadeOut {
+  0% { opacity: 1; transform: translateY(0) scale(1); }
+  100% { opacity: 0; transform: translateY(-20px) scale(0.95); }
+}
+
+.hero-animate {
+  animation: heroFadeIn 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.nomor-wa {
+  font-family: 'Farro', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif !important;
+  text-transform: none !important;
+  font-size: 0.88rem !important;
+  color: #FAFAFA;
+}
+
+.page-num {
+  font-family: 'Farro', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif !important;
+  text-transform: none !important;
+  text-align: center;
+}
+
+.font-farro {
+  font-family: 'Farro', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+}

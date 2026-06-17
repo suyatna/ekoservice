@@ -1,0 +1,65 @@
+# ============================================================
+# Dockerfile - Backend (Fastify API)
+# ============================================================
+
+FROM node:20-bookworm-slim AS builder
+
+WORKDIR /app
+
+RUN apt-get update \
+  && apt-get install -y --no-install-recommends openssl ca-certificates \
+  && rm -rf /var/lib/apt/lists/*
+
+# Install ALL deps (including dev) for prisma generate
+COPY backend/package*.json ./
+RUN npm ci --omit=production 2>/dev/null || npm install
+
+COPY backend/tsconfig.json ./tsconfig.json
+COPY backend/src ./src
+COPY backend/src/prisma ./prisma
+COPY backend/.env.example ./.env.example
+
+# Generate Prisma client
+RUN npx prisma generate
+
+# Build TypeScript output
+RUN npm run build
+
+# Prune dev deps
+RUN npm prune --omit=dev
+
+FROM node:20-bookworm-slim AS runner
+
+RUN apt-get update \
+  && apt-get install -y --no-install-recommends openssl ca-certificates \
+  && rm -rf /var/lib/apt/lists/*
+
+RUN groupadd -r nodejs -g 1001 && \
+    useradd -r -u 1001 -g nodejs nodejs
+
+WORKDIR /app
+
+# Copy deps and generated Prisma client
+COPY --from=builder --chown=nodejs:nodejs /app/node_modules ./node_modules
+COPY --from=builder --chown=nodejs:nodejs /app/prisma ./prisma
+COPY --from=builder --chown=nodejs:nodejs /app/dist ./dist
+COPY --from=builder --chown=nodejs:nodejs /app/tsconfig.json ./tsconfig.json
+COPY --from=builder --chown=nodejs:nodejs /app/package*.json ./
+
+# Copy source
+COPY --chown=nodejs:nodejs backend/src ./src
+
+# Create uploads directory
+RUN mkdir -p uploads && chown nodejs:nodejs uploads
+
+ENV NODE_ENV=production
+ENV PORT=3000
+
+EXPOSE 3000
+
+USER nodejs
+
+HEALTHCHECK --interval=15s --timeout=5s --start-period=30s --retries=3 \
+  CMD wget -qO- http://localhost:3000/health || exit 1
+
+CMD ["node", "dist/server.js"]
