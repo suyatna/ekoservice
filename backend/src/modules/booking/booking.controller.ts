@@ -11,7 +11,7 @@ import { Role } from '@prisma/client';
 export class BookingController {
   async buat(request: FastifyRequest, reply: FastifyReply) {
     const parsed = skemaBookingBuat.safeParse(request.body);
-    if (!parsed.success) throw new ValidationError(fromZodError(parsed.error).message);
+    if (!parsed.success) throw new ValidationError(fromZodError(parsed.error as any).message);
     const userId = (request.user as { sub: string }).sub;
     const result = await buatBooking(parsed.data, userId);
     return reply.code(201).send(ok(result, request.requestId));
@@ -20,7 +20,7 @@ export class BookingController {
   async daftar(request: FastifyRequest, reply: FastifyReply) {
     const query = request.query as Record<string, unknown>;
     const parsed = skemaBookingFilter.safeParse(query);
-    if (!parsed.success) throw new ValidationError(fromZodError(parsed.error).message);
+    if (!parsed.success) throw new ValidationError(fromZodError(parsed.error as any).message);
     const user = request.user as { sub: string; role: string };
     const result = await daftarBooking(parsed.data, user.sub, user.role as Role);
     return reply.send(paginated(result.data, result.total, result.page, result.limit, request.requestId));
@@ -34,7 +34,7 @@ export class BookingController {
 
   async ubah(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply) {
     const parsed = skemaBookingUbah.safeParse(request.body);
-    if (!parsed.success) throw new ValidationError(fromZodError(parsed.error).message);
+    if (!parsed.success) throw new ValidationError(fromZodError(parsed.error as any).message);
     const user = request.user as { sub: string; role: string };
     const result = await ubahBooking(request.params.id, parsed.data, user.sub, user.role as Role);
     return reply.send(ok(result, request.requestId));

@@ -31,17 +31,9 @@ export async function helmetPlugin(fastify: FastifyInstance) {
       action: 'deny',
     },
     noSniff: true,
-    xssFilter: {
-      enabled: true,
-      mode: 'block',
-    },
+    xssFilter: true,
     referrerPolicy: {
       policy: 'strict-origin-when-cross-origin',
-    },
-    permissionsPolicy: {
-      camera: [],
-      microphone: [],
-      geolocation: [],
     },
     crossOriginEmbedderPolicy: false,
     crossOriginResourcePolicy: {

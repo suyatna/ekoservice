@@ -24,11 +24,7 @@ export interface JwtPayload {
   exp?: number;
 }
 
-export interface JwtUser {
-  id: string;
-  role: string;
-  email: string;
-}
+export interface JwtUser extends JwtPayload {}
 
 export async function jwtPlugin(fastify: FastifyInstance) {
   await fastify.register(fastifyJwt, {

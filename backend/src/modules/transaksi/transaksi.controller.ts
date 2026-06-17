@@ -11,7 +11,7 @@ import PDFDocument from 'pdfkit';
 export class TransaksiController {
   async buat(request: FastifyRequest, reply: FastifyReply) {
     const parsed = skemaTransaksiBuat.safeParse(request.body);
-    if (!parsed.success) throw new ValidationError(fromZodError(parsed.error).message);
+    if (!parsed.success) throw new ValidationError(fromZodError(parsed.error as any).message);
     const result = await buatTransaksi(parsed.data);
     return reply.code(201).send(ok(result, request.requestId));
   }
@@ -19,14 +19,14 @@ export class TransaksiController {
   async daftar(request: FastifyRequest, reply: FastifyReply) {
     const query = request.query as Record<string, unknown>;
     const parsed = skemaTransaksiFilter.safeParse(query);
-    if (!parsed.success) throw new ValidationError(fromZodError(parsed.error).message);
+    if (!parsed.success) throw new ValidationError(fromZodError(parsed.error as any).message);
     const result = await daftarTransaksi(parsed.data);
     return reply.send(paginated(result.data, result.total, result.page, result.limit, request.requestId));
   }
 
   async ubah(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply) {
     const parsed = skemaTransaksiUbah.safeParse(request.body);
-    if (!parsed.success) throw new ValidationError(fromZodError(parsed.error).message);
+    if (!parsed.success) throw new ValidationError(fromZodError(parsed.error as any).message);
     const result = await ubahTransaksi(request.params.id, parsed.data);
     return reply.send(ok(result, request.requestId));
   }
@@ -39,7 +39,7 @@ export class TransaksiController {
   async exportPdf(request: FastifyRequest, reply: FastifyReply) {
     const query = request.query as Record<string, unknown>;
     const parsed = skemaTransaksiFilter.safeParse(query);
-    if (!parsed.success) throw new ValidationError(fromZodError(parsed.error).message);
+    if (!parsed.success) throw new ValidationError(fromZodError(parsed.error as any).message);
 
     const result = await daftarTransaksi({ ...parsed.data, page: 1, limit: 1000 });
     const transaksi = result.data;

@@ -15,13 +15,13 @@ export async function transaksiRoutes(fastify: FastifyInstance) {
     return transaksiController.buat(request, reply);
   });
 
-  fastify.patch('/:id', {
+  fastify.patch<{ Params: { id: string } }>('/:id', {
     preHandler: [authorize('transaksi:ubah')],
   }, async (request, reply) => {
     return transaksiController.ubah(request, reply);
   });
 
-  fastify.delete('/:id', {
+  fastify.delete<{ Params: { id: string } }>('/:id', {
     preHandler: [authorize('transaksi:ubah')],
   }, async (request, reply) => {
     return transaksiController.hapus(request, reply);

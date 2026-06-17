@@ -2,6 +2,9 @@
 // Global Type Augmentations for Fastify Plugins
 // ──────────────────────────────────────────────────────────
 
+import 'fastify';
+import type { JwtPayload } from '../plugins/auth.js';
+
 declare module 'fastify' {
   interface FastifyReply {
     setCookie(
@@ -29,5 +32,8 @@ declare module 'fastify' {
 
   interface FastifyRequest {
     cookies: Record<string, string>;
+    user?: JwtPayload;
   }
 }
+
+export {};

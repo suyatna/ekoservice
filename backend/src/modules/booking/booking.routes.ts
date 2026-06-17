@@ -16,21 +16,21 @@ export async function bookingRoutes(fastify: FastifyInstance) {
   });
 
   // GET /booking/:id
-  fastify.get('/:id', {
+  fastify.get<{ Params: { id: string } }>('/:id', {
     preHandler: [authorize('booking:baca')],
   }, async (request, reply) => {
     return bookingController.getById(request, reply);
   });
 
   // PATCH /booking/:id
-  fastify.patch('/:id', {
+  fastify.patch<{ Params: { id: string } }>('/:id', {
     preHandler: [authorize('booking:ubah', 'tugas:ubah')],
   }, async (request, reply) => {
     return bookingController.ubah(request, reply);
   });
 
   // DELETE /booking/:id
-  fastify.delete('/:id', {
+  fastify.delete<{ Params: { id: string } }>('/:id', {
     preHandler: [authorize('booking:hapus')],
   }, async (request, reply) => {
     return bookingController.hapus(request, reply);

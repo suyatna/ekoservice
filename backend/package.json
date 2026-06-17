@@ -5,7 +5,7 @@
   "license": "MIT",
   "scripts": {
     "dev": "tsx watch src/server.ts",
-    "build": "npx tsc --skipLibCheck || true",
+    "build": "npx tsc --skipLibCheck",
     "start": "node dist/server.js",
     "test": "vitest",
     "test:coverage": "vitest run --coverage",

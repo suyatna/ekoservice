@@ -55,7 +55,7 @@ export class AuthController {
       })
       .code(200);
 
-    return reply.send(ok({ accessToken, user: result.user }, (request as Record<string, string>).requestId));
+    return reply.send(ok({ accessToken, user: result.user }, request.requestId));
   }
 
   async register(request: FastifyRequest, reply: FastifyReply) {
@@ -93,7 +93,7 @@ export class AuthController {
       })
       .code(201);
 
-    return reply.send(ok({ accessToken, user: result.user }, (request as Record<string, string>).requestId));
+    return reply.send(ok({ accessToken, user: result.user }, request.requestId));
   }
 
   async refresh(request: FastifyRequest, reply: FastifyReply) {
@@ -101,7 +101,7 @@ export class AuthController {
 
     if (!refreshToken) {
       return reply.code(401).send(
-        fail('Refresh token tidak ditemukan', 'UNAUTHORIZED', (request as Record<string, string>).requestId)
+        fail('Refresh token tidak ditemukan', 'UNAUTHORIZED', request.requestId)
       );
     }
 
@@ -127,7 +127,7 @@ export class AuthController {
       })
       .code(200);
 
-    return reply.send(ok({ accessToken, user }, (request as Record<string, string>).requestId));
+    return reply.send(ok({ accessToken, user }, request.requestId));
   }
 
   async logout(request: FastifyRequest, reply: FastifyReply) {
@@ -153,11 +153,11 @@ export class AuthController {
     const userId = (request.user as { sub?: string }).sub ?? (request.user as { id?: string }).id;
     if (!userId) {
       return reply.code(401).send(
-        fail('Token tidak valid', 'UNAUTHORIZED', (request as Record<string, string>).requestId)
+        fail('Token tidak valid', 'UNAUTHORIZED', request.requestId)
       );
     }
     const user = await getUserById(userId);
-    return reply.send(ok(user, (request as Record<string, string>).requestId));
+    return reply.send(ok(user, request.requestId));
   }
 }
 

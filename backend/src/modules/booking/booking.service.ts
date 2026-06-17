@@ -20,8 +20,8 @@ export async function buatBooking(
       noTelpPelanggan: data.noTelpPelanggan || '',
       alamat: '',
       kategori: data.kategori,
-      ...(data.tglBooking ? { tglBooking: new Date(data.tglBooking) } : {}),
-      dibuatOlehId,
+      tglBooking: data.tglBooking ? new Date(data.tglBooking) : new Date(),
+      dibuatOleh: { connect: { id: dibuatOlehId } },
       status: 'BOOKING_DIBUAT',
     },
     include: {

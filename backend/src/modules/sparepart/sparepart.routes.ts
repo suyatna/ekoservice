@@ -15,13 +15,13 @@ export async function sparepartRoutes(fastify: FastifyInstance) {
     return sparepartController.buat(request, reply);
   });
 
-  fastify.patch('/:id', {
+  fastify.patch<{ Params: { id: string } }>('/:id', {
     preHandler: [authorize('stok:ubah', 'sparepart:ubah')],
   }, async (request, reply) => {
     return sparepartController.ubah(request, reply);
   });
 
-  fastify.delete('/:id', {
+  fastify.delete<{ Params: { id: string } }>('/:id', {
     preHandler: [authorize('stok:ubah', 'sparepart:ubah')],
   }, async (request, reply) => {
     return sparepartController.hapus(request, reply);

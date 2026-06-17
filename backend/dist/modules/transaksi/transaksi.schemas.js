@@ -9,8 +9,10 @@ export const skemaTransaksiBuat = z.object({
 });
 export const skemaTransaksiUbah = z.object({
     deskripsi: z.string().min(3).max(500).optional(),
+    jenis: z.nativeEnum(JenisTransaksi).optional(),
     nominal: z.number().min(1000).optional(),
     metodeBayar: z.string().max(50).optional().nullable(),
+    dibuatDi: z.string().datetime().optional(),
 });
 export const skemaTransaksiFilter = z.object({
     page: z.coerce.number().min(1).default(1),
