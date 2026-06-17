@@ -11,35 +11,11 @@ export default defineConfig({
   },
   server: {
     proxy: {
-      '/auth': {
+      '/api': {
         target: 'http://localhost:3000',
         changeOrigin: true,
         secure: false,
-      },
-      '/booking': {
-        target: 'http://localhost:3000',
-        changeOrigin: true,
-        secure: false,
-      },
-      '/transaksi': {
-        target: 'http://localhost:3000',
-        changeOrigin: true,
-        secure: false,
-      },
-      '/sparepart': {
-        target: 'http://localhost:3000',
-        changeOrigin: true,
-        secure: false,
-      },
-      '/dashboard': {
-        target: 'http://localhost:3000',
-        changeOrigin: true,
-        secure: false,
-      },
-      '/health': {
-        target: 'http://localhost:3000',
-        changeOrigin: true,
-        secure: false,
+        rewrite: (path) => path.replace(/^\/api/, ''),
       },
     },
   },

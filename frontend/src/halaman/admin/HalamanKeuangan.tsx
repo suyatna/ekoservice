@@ -5,6 +5,7 @@ import { FormSelect } from '@/komponen/form/FormSelect';
 import { FormInput } from '@/komponen/form/FormInput';
 import { Tombol } from '@/komponen/ui/tombol';
 import { Search, Loader2, Plus } from 'lucide-react';
+import { API_BASE_URL } from '@/layanan/api';
 import { transaksiLayanan } from '@/layanan/transaksi';
 import { tokenStorage } from '@/utils/token';
 import { toast } from 'sonner';
@@ -121,7 +122,7 @@ export default function HalamanKeuangan() {
     if (dari) params.append('dari', dari);
     if (sampai) params.append('sampai', sampai);
     try {
-      const res = await fetch(`/transaksi/export?${params}`, {
+      const res = await fetch(`${API_BASE_URL}/transaksi/export?${params}`, {
         headers: {
           Authorization: `Bearer ${tokenStorage.getToken()}`,
           'X-API-Key': API_KEY,

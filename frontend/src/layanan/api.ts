@@ -4,8 +4,10 @@ import { toast } from 'sonner';
 import { pakaiAuthStore } from '@/store/auth';
 import { tokenStorage } from '@/utils/token';
 
+export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? '/api';
+
 export const api: AxiosInstance = axios.create({
-  baseURL: '/', // Vite proxy handles routing
+  baseURL: API_BASE_URL,
   timeout: 10000,
 });
 
