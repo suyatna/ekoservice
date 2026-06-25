@@ -6,9 +6,7 @@ Project ekoservice {
 }
 
 Enum Role {
-  ADMIN_OPERASIONAL
-  FINANCE
-  WAREHOUSE
+  ADMIN
 }
 
 Enum StatusBookingGroup {
@@ -45,7 +43,7 @@ Table users {
   nama varchar [not null]
   email varchar [not null, unique]
   password varchar [not null]
-  role Role [not null]
+  role Role [not null, default: "ADMIN"]
   aktif boolean [not null, default: true]
 
   indexes {
