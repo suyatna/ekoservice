@@ -9,8 +9,6 @@ const hakAkses = {
         'booking:assign',
         'teknisi:baca',
         'teknisi:bikin',
-        'audit:baca',
-        'dashboard:baca',
     ],
     CUSTOMER: [
         'booking:bikin',
@@ -31,7 +29,6 @@ const hakAkses = {
         'transaksi:ubah',
         'refund:proses',
         'laporan:baca',
-        'dashboard:baca',
     ],
     WAREHOUSE: [
         'stok:baca',
@@ -81,7 +78,7 @@ export function authorize(...requiredPermissions) {
 // ──────────────────────────────────────────────────────────
 // Predefined role guards
 // ──────────────────────────────────────────────────────────
-export const requireAdmin = authorize('booking:baca', 'dashboard:baca');
+export const requireAdmin = authorize('booking:baca');
 export const requireFinance = authorize('pembayaran:baca', 'laporan:baca');
 export const requireWarehouse = authorize('stok:baca');
 export const requireTeknisi = authorize('tugas:baca_milik_sendiri');

@@ -12,7 +12,6 @@ import { authRoutes } from './modules/auth/auth.routes.js';
 import { bookingRoutes } from './modules/booking/booking.routes.js';
 import { transaksiRoutes } from './modules/transaksi/transaksi.routes.js';
 import { sparepartRoutes } from './modules/sparepart/sparepart.routes.js';
-import { dashboardRoutes } from './modules/dashboard/dashboard.routes.js';
 import { fail } from './shared/response.js';
 import { serializeError } from './shared/errors.js';
 import { allowedOrigins } from './config/index.js';
@@ -87,12 +86,10 @@ export async function buildApp() {
     await fastify.register(bookingRoutes, { prefix: '/booking' });
     await fastify.register(transaksiRoutes, { prefix: '/transaksi' });
     await fastify.register(sparepartRoutes, { prefix: '/sparepart' });
-    await fastify.register(dashboardRoutes, { prefix: '/dashboard' });
     fastify.addHook('onReady', async () => {
         fastify.log.info(`🚀 ${config.APP_NAME} ready on port ${config.PORT}`);
         fastify.log.info(`📦 Environment: ${config.NODE_ENV}`);
         fastify.log.info(`🔒 Rate limiting: ${config.ENABLE_RATE_LIMIT ? 'ON' : 'OFF'}`);
-        fastify.log.info(`📝 Audit logging: ${config.ENABLE_AUDIT_LOG ? 'ON' : 'OFF'}`);
     });
     return fastify;
 }

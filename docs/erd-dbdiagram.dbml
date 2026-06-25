@@ -1,6 +1,5 @@
 // EkoService - DB diagram untuk dbdiagram.io
 // Scope: tabel yang dipakai oleh frontend saat ini.
-// Catatan: frontend sparepart punya field hargaJual, tapi Prisma schema saat ini belum punya kolom itu.
 
 Project ekoservice {
   database_type: "PostgreSQL"

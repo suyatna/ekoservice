@@ -9,7 +9,6 @@ export interface SparepartResponse {
   stok: number;
   stokMinimal: number;
   satuan: string;
-  hargaJual: string;
   hargaBeli: string | null;
 }
 

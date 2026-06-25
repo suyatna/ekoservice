@@ -3,7 +3,6 @@
 # ───────────────────────────────────────────────────────────
 # Services:
 #   postgres   - PostgreSQL 16 database
-#   redis      - Redis 7 (cache + queue)
 #   backend   - Fastify API (Node 20)
 #   frontend  - Vite React SPA (Nginx)
 # ───────────────────────────────────────────────────────────
@@ -40,34 +39,6 @@ services:
     #     cpus: '1.0'
     #     memory: 1G
 
-  # ── Redis 7 ───────────────────────────────────────────
-  redis:
-    image: redis:7-alpine
-    container_name: ekoservice_redis
-    restart: unless-stopped
-    ports:
-      - "127.0.0.1:6379:6379"
-    environment:
-      REDIS_PASSWORD: ${REDIS_PASSWORD:-redis_pass_prod}
-    command:
-      - sh
-      - -c
-      - >
-        redis-server
-        --requirepass "$$REDIS_PASSWORD"
-        --maxmemory 256mb
-        --maxmemory-policy allkeys-lru
-        --appendonly yes
-    volumes:
-      - redis_data:/data
-    healthcheck:
-      test: ["CMD-SHELL", "redis-cli -a \"$${REDIS_PASSWORD}\" ping | grep PONG"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-    networks:
-      - ekoservice
-
   # ── Backend API ────────────────────────────────────────
   backend:
     build:
@@ -80,16 +51,10 @@ services:
     environment:
       NODE_ENV: production
       DATABASE_URL: postgresql://${POSTGRES_USER:-eko_service}:${POSTGRES_PASSWORD:-eko_pass_prod}@postgres:5432/eko_service
-      REDIS_HOST: redis
-      REDIS_PORT: 6379
-      REDIS_PASSWORD: ${REDIS_PASSWORD:-redis_pass_prod}
-      REDIS_DB: 0
     ports:
       - "3000:3000"
     depends_on:
       postgres:
-        condition: service_healthy
-      redis:
         condition: service_healthy
     healthcheck:
       test: ["CMD-SHELL", "node -e \"fetch('http://127.0.0.1:3000/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))\""]
@@ -134,8 +99,6 @@ services:
 
 volumes:
   postgres_data:
-    driver: local
-  redis_data:
     driver: local
   nginx_logs:
     driver: local

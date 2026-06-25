@@ -23,8 +23,6 @@ const hakAkses: Record<Role, Permission[]> = {
     'booking:assign',
     'teknisi:baca',
     'teknisi:bikin',
-    'audit:baca',
-    'dashboard:baca',
   ],
   CUSTOMER: [
     'booking:bikin',
@@ -45,7 +43,6 @@ const hakAkses: Record<Role, Permission[]> = {
     'transaksi:ubah',
     'refund:proses',
     'laporan:baca',
-    'dashboard:baca',
   ],
   WAREHOUSE: [
     'stok:baca',
@@ -108,8 +105,7 @@ export function authorize(...requiredPermissions: Permission[]) {
 // ──────────────────────────────────────────────────────────
 
 export const requireAdmin = authorize(
-  'booking:baca',
-  'dashboard:baca'
+  'booking:baca'
 );
 
 export const requireFinance = authorize('pembayaran:baca', 'laporan:baca');
