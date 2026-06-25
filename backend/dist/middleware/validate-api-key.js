@@ -35,8 +35,7 @@ export async function validateApiKey(request, reply) {
 // ──────────────────────────────────────────────────────────
 export function setupApiKeyMiddleware(fastify) {
     fastify.addHook('preHandler', async (request, reply) => {
-        // Skip API key untuk health check dan docs
-        const skipPaths = ['/health', '/docs', '/swagger'];
+        const skipPaths = ['/health'];
         if (skipPaths.some((p) => request.url.startsWith(p))) {
             return;
         }

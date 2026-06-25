@@ -36,22 +36,6 @@ export function generateUUID(): string {
 }
 
 // ──────────────────────────────────────────────────────────
-// CSRF Token
-// ──────────────────────────────────────────────────────────
-
-export function generateCsrfToken(): string {
-  return uuidv4().replace(/-/g, '') + uuidv4().replace(/-/g, '');
-}
-
-// ──────────────────────────────────────────────────────────
-// API Key Generator (for creating new keys)
-// ──────────────────────────────────────────────────────────
-
-export function generateApiKey(): string {
-  return uuidv4().replace(/-/g, '') + uuidv4().replace(/-/g, '');
-}
-
-// ──────────────────────────────────────────────────────────
 // Refresh Token Generator
 // ──────────────────────────────────────────────────────────
 

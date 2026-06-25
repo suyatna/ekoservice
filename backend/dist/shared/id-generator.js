@@ -26,18 +26,6 @@ export function generateUUID() {
     return uuidv4();
 }
 // ──────────────────────────────────────────────────────────
-// CSRF Token
-// ──────────────────────────────────────────────────────────
-export function generateCsrfToken() {
-    return uuidv4().replace(/-/g, '') + uuidv4().replace(/-/g, '');
-}
-// ──────────────────────────────────────────────────────────
-// API Key Generator (for creating new keys)
-// ──────────────────────────────────────────────────────────
-export function generateApiKey() {
-    return uuidv4().replace(/-/g, '') + uuidv4().replace(/-/g, '');
-}
-// ──────────────────────────────────────────────────────────
 // Refresh Token Generator
 // ──────────────────────────────────────────────────────────
 export function generateRefreshToken() {
