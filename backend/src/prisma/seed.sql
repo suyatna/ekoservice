@@ -10,7 +10,6 @@ INSERT INTO "users" (
   "nama",
   "email",
   "password",
-  "noTelp",
   "role",
   "aktif",
   "dibuatDi"
@@ -19,8 +18,7 @@ INSERT INTO "users" (
   'Administrator',
   'admin@ekoservice.com',
   '$argon2id$v=19$m=65536,t=3,p=4$9kto8mOP5DPZtvhoz6c+Dw$ktWZFFGf1qnHTboDykV+/dRJFa0ZnxzDq3RCiwcaprk',
-  NULL,
-  'SUPER_ADMIN',
+  'ADMIN',
   true,
   NOW()
 ) ON CONFLICT (email) DO NOTHING;

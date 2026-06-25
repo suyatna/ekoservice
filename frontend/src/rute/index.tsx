@@ -25,15 +25,15 @@ export const router = createBrowserRouter([
     element: <PenjagaAuth />,
     children: [
       {
-        element: <PenjagaAdmin roles={['ADMIN_OPERASIONAL'] as Role[]} />,
+        element: <PenjagaAdmin roles={['ADMIN'] as Role[]} />,
         children: [{ path: '/admin/booking', element: bungkusLazy(<HalamanBooking />) }]
       },
       {
-        element: <PenjagaAdmin roles={['FINANCE'] as Role[]} />,
+        element: <PenjagaAdmin roles={['ADMIN'] as Role[]} />,
         children: [{ path: '/admin/keuangan', element: bungkusLazy(<HalamanKeuangan />) }]
       },
       {
-        element: <PenjagaAdmin roles={['WAREHOUSE'] as Role[]} />,
+        element: <PenjagaAdmin roles={['ADMIN'] as Role[]} />,
         children: [{ path: '/admin/stok', element: bungkusLazy(<HalamanStok />) }]
       }
     ]

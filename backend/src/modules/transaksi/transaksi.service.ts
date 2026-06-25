@@ -12,8 +12,7 @@ export async function buatTransaksi(data: SkemaTransaksiBuat) {
       deskripsi: data.deskripsi,
       jenis: data.jenis,
       nominal: new Decimal(data.nominal),
-      metodeBayar: data.metodeBayar ?? null,
-      bookingId: data.bookingId ?? null,
+      ...(data.dibuatDi !== undefined ? { dibuatDi: new Date(data.dibuatDi) } : {}),
     },
   });
 }
@@ -43,7 +42,6 @@ export async function daftarTransaksi(filter: SkemaTransaksiFilter) {
       skip,
       take: limit,
       orderBy: { dibuatDi: 'desc' },
-      include: { booking: { select: { id: true, idTampilan: true, namaPelanggan: true } } },
     }),
     prisma.transaksi.count({ where }),
   ]);
@@ -61,7 +59,6 @@ export async function ubahTransaksi(id: string, data: SkemaTransaksiUbah) {
       ...(data.deskripsi !== undefined ? { deskripsi: data.deskripsi } : {}),
       ...(data.jenis !== undefined ? { jenis: data.jenis } : {}),
       ...(data.nominal !== undefined ? { nominal: new Decimal(data.nominal) } : {}),
-      ...(data.metodeBayar !== undefined ? { metodeBayar: data.metodeBayar } : {}),
       ...(data.dibuatDi !== undefined ? { dibuatDi: new Date(data.dibuatDi) } : {}),
     },
   });

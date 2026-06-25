@@ -49,7 +49,7 @@ export async function daftar(data) {
             nama: data.nama,
             email: data.email,
             password: hashedPassword,
-            role: 'CUSTOMER',
+            role: 'ADMIN',
             aktif: true,
         },
     });
@@ -59,9 +59,7 @@ export async function daftar(data) {
             nama: user.nama,
             email: user.email,
             role: user.role,
-            noTelp: user.noTelp,
             aktif: user.aktif,
-            dibuatDi: user.dibuatDi.toISOString(),
         },
     };
 }
@@ -83,9 +81,7 @@ export async function masuk(email, password) {
             nama: user.nama,
             email: user.email,
             role: user.role,
-            noTelp: user.noTelp,
             aktif: user.aktif,
-            dibuatDi: user.dibuatDi.toISOString(),
         },
     };
 }
@@ -98,10 +94,7 @@ export async function getUserById(id) {
             nama: true,
             email: true,
             role: true,
-            noTelp: true,
             aktif: true,
-            dibuatDi: true,
-            diupdateDi: true,
         },
     });
     if (!user) {

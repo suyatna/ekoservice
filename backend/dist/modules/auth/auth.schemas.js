@@ -49,9 +49,7 @@ export const schemaUser = z.object({
     nama: z.string(),
     email: z.string(),
     role: z.string(),
-    noTelp: z.string().nullable(),
     aktif: z.boolean(),
-    dibuatDi: z.string().datetime(),
 });
 export const schemaLoginResponse = z.object({
     accessToken: z.string(),

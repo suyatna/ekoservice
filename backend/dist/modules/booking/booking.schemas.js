@@ -15,6 +15,7 @@ export const skemaBookingBuat = z.object({
         .refine((value) => value === '' || /^(\+62|62|0)[0-9]{8,13}$/.test(value), 'Nomor WhatsApp tidak valid'),
     kategori: z.nativeEnum(KategoriLayanan),
     tglBooking: z.string().optional(),
+    status: z.nativeEnum(StatusBooking).optional(),
 });
 export const skemaBookingUbah = z.object({
     namaPelanggan: z
@@ -38,7 +39,7 @@ export const skemaBookingFilter = z.object({
     search: z.string().optional(),
     status: z.nativeEnum(StatusBooking).optional(),
     kategori: z.nativeEnum(KategoriLayanan).optional(),
-    dari: z.string().datetime().optional(),
-    sampai: z.string().datetime().optional(),
+    dari: z.string().optional(),
+    sampai: z.string().optional(),
 });
 //# sourceMappingURL=booking.schemas.js.map

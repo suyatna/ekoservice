@@ -7,8 +7,6 @@ export interface TransaksiResponse {
   deskripsi: string;
   jenis: 'MASUK' | 'KELUAR';
   nominal: string;
-  metodeBayar: string | null;
-  bookingId: string | null;
   dibuatDi: string;
 }
 

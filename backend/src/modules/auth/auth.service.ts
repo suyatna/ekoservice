@@ -11,7 +11,6 @@ import {
   generateRefreshToken,
 } from '../../shared/id-generator.js';
 import { SkemaDaftar, SchemaLoginResponse } from './auth.schemas.js';
-import { Role } from '@prisma/client';
 
 // ──────────────────────────────────────────────────────────
 // Auth Service
@@ -72,7 +71,7 @@ export async function daftar(data: SkemaDaftar): Promise<Omit<SchemaLoginRespons
       nama: data.nama,
       email: data.email,
       password: hashedPassword,
-      role: 'CUSTOMER' as Role,
+      role: 'ADMIN',
       aktif: true,
     },
   });
@@ -83,9 +82,7 @@ export async function daftar(data: SkemaDaftar): Promise<Omit<SchemaLoginRespons
       nama: user.nama,
       email: user.email,
       role: user.role,
-      noTelp: user.noTelp,
       aktif: user.aktif,
-      dibuatDi: user.dibuatDi.toISOString(),
     },
   };
 }
@@ -115,9 +112,7 @@ export async function masuk(
       nama: user.nama,
       email: user.email,
       role: user.role,
-      noTelp: user.noTelp,
       aktif: user.aktif,
-      dibuatDi: user.dibuatDi.toISOString(),
     },
   };
 }
@@ -132,10 +127,7 @@ export async function getUserById(id: string) {
       nama: true,
       email: true,
       role: true,
-      noTelp: true,
       aktif: true,
-      dibuatDi: true,
-      diupdateDi: true,
     },
   });
 

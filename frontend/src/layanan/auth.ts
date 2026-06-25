@@ -9,9 +9,7 @@ export interface User {
   nama: string;
   email: string;
   role: Role;
-  noTelp: string | null;
   aktif: boolean;
-  dibuatDi: string;
 }
 
 export interface LoginResponse {

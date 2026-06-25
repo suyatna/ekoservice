@@ -1,43 +1,16 @@
 import { ForbiddenError } from '../shared/errors.js';
 const hakAkses = {
-    SUPER_ADMIN: ['*'],
-    ADMIN_OPERASIONAL: [
+    ADMIN: [
         'booking:baca',
         'booking:bikin',
         'booking:ubah',
         'booking:hapus',
-        'booking:assign',
-        'teknisi:baca',
-        'teknisi:bikin',
-    ],
-    CUSTOMER: [
-        'booking:bikin',
-        'booking:baca_milik_sendiri',
-        'pembayaran:baca_milik_sendiri',
-    ],
-    TEKNISI: [
-        'tugas:baca_milik_sendiri',
-        'tugas:ubah',
-        'booking:baca',
-        'sparepart:baca',
-    ],
-    FINANCE: [
-        'pembayaran:baca',
-        'pembayaran:proses',
-        'transaksi:baca',
-        'transaksi:bikin',
-        'transaksi:ubah',
-        'refund:proses',
-        'laporan:baca',
-    ],
-    WAREHOUSE: [
-        'stok:baca',
-        'stok:ubah',
-        'stok:bikin',
         'sparepart:baca',
         'sparepart:ubah',
         'sparepart:bikin',
-        'reservasi:baca',
+        'transaksi:baca',
+        'transaksi:bikin',
+        'transaksi:ubah',
     ],
 };
 export function punyaIzin(role, izin) {
@@ -65,9 +38,6 @@ export function authorize(...requiredPermissions) {
             throw new ForbiddenError('User tidak ditemukan di token');
         }
         const role = user.role;
-        // SUPER_ADMIN selalu punya akses
-        if (role === 'SUPER_ADMIN')
-            return;
         // Cek apakah user punya SEMUA izin yang diperlukan
         const missingPermissions = requiredPermissions.filter((perm) => !punyaIzin(role, perm));
         if (missingPermissions.length > 0) {
@@ -79,8 +49,4 @@ export function authorize(...requiredPermissions) {
 // Predefined role guards
 // ──────────────────────────────────────────────────────────
 export const requireAdmin = authorize('booking:baca');
-export const requireFinance = authorize('pembayaran:baca', 'laporan:baca');
-export const requireWarehouse = authorize('stok:baca');
-export const requireTeknisi = authorize('tugas:baca_milik_sendiri');
-export const requireCustomer = authorize('booking:bikin');
 //# sourceMappingURL=authorize.js.map

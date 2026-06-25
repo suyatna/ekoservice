@@ -19,18 +19,14 @@ export const skemaSparepartBuat = z.object({
   nama: z.string().min(2, 'Nama minimal 2 karakter').max(100),
   kategori: z.enum(['KULKAS', 'AC', 'MESIN_CUCI', 'SHOWCASE', 'TV']),
   stok: z.coerce.number().min(0).default(0),
-  stokMinimal: z.coerce.number().min(0).default(5),
   satuan: z.string().min(1).max(20).default('pcs'),
-  hargaBeli: z.number().min(0).optional().nullable(),
 });
 
 export const skemaSparepartUbah = z.object({
   nama: z.string().min(2).max(100).optional(),
   kategori: z.enum(['KULKAS', 'AC', 'MESIN_CUCI', 'SHOWCASE', 'TV']).optional(),
   stok: z.number().min(0).optional(),
-  stokMinimal: z.number().min(0).optional(),
   satuan: z.string().min(1).max(20).optional(),
-  hargaBeli: z.number().min(0).optional().nullable(),
 });
 
 export type SparepartFilter = z.infer<typeof skemaSparepartFilter>;

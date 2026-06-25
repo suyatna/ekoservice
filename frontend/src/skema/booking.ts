@@ -1,10 +1,10 @@
 import { z } from 'zod';
 
 export const statusGroupConfig: Record<string, { label: string; statuses: string[] }> = {
-  MENUNGGU:   { label: 'Menunggu', statuses: ['BOOKING_DIBUAT', 'MENUNGGU_PENUGASAN', 'TEKNISI_DITUGASKAN', 'TEKNISI_MENUJU_LOKASI', 'TEKNISI_TIBA', 'DIAGNOSIS_DIMULAI', 'PENAWARAN_DIBUAT', 'MENUNGGU_PERSETUJUAN_PELANGGAN', 'DISETUJUI_PELANGGAN'] },
-  SERVIS:     { label: 'Service', statuses: ['SERVIS_DIMULAI', 'SERVIS_SELESAI', 'MENUNGGU_PEMBAYARAN', 'PEMBAYARAN_DITERIMA'] },
+  MENUNGGU:   { label: 'Menunggu', statuses: ['MENUNGGU'] },
+  SERVIS:     { label: 'Service', statuses: ['SERVIS'] },
   SELESAI:    { label: 'Selesai', statuses: ['SELESAI'] },
-  DIBATALKAN: { label: 'Batal', statuses: ['DIBATALKAN_PELANGGAN', 'DIBATALKAN_ADMIN', 'DIBATALKAN_SISTEM'] },
+  DIBATALKAN: { label: 'Batal', statuses: ['DIBATALKAN'] },
 };
 
 export const kategoriOptions: Record<string, string> = {

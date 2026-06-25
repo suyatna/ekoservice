@@ -11,6 +11,5 @@ export const PenjagaAuth = () => {
 export const PenjagaAdmin = ({ roles }: { roles: Role[] }) => {
   const { user } = pakaiAuthStore();
   if (!user) return <Navigate to="/masuk" replace />;
-  if (user.role === 'SUPER_ADMIN') return <Outlet />;
   return roles.includes(user.role) ? <Outlet /> : <Navigate to="/" replace />;
 };

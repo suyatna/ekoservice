@@ -1,7 +1,6 @@
 import { prisma } from '../../shared/prisma.js';
 import { generateSparepartId, generateUUID } from '../../shared/id-generator.js';
 import { NotFoundError } from '../../shared/errors.js';
-import { Decimal } from '@prisma/client/runtime/library';
 export async function buatSparepart(data) {
     return prisma.sparepart.create({
         data: {
@@ -10,9 +9,7 @@ export async function buatSparepart(data) {
             nama: data.nama,
             kategori: data.kategori,
             stok: data.stok,
-            stokMinimal: data.stokMinimal,
             satuan: data.satuan,
-            hargaBeli: data.hargaBeli != null ? new Decimal(data.hargaBeli) : null,
         },
     });
 }
@@ -57,9 +54,7 @@ export async function ubahSparepart(id, data) {
             ...(data.nama !== undefined ? { nama: data.nama } : {}),
             ...(data.kategori !== undefined ? { kategori: data.kategori } : {}),
             ...(data.stok !== undefined ? { stok: data.stok } : {}),
-            ...(data.stokMinimal !== undefined ? { stokMinimal: data.stokMinimal } : {}),
             ...(data.satuan !== undefined ? { satuan: data.satuan } : {}),
-            ...(data.hargaBeli !== undefined ? { hargaBeli: data.hargaBeli != null ? new Decimal(data.hargaBeli) : null } : {}),
         },
     });
 }
@@ -73,7 +68,7 @@ export async function getStokWarning() {
     return prisma.sparepart.findMany({
         where: { stok: { lte: 2 } },
         orderBy: { stok: 'asc' },
-        select: { id: true, idTampilan: true, nama: true, kategori: true, stok: true, stokMinimal: true },
+        select: { id: true, idTampilan: true, nama: true, kategori: true, stok: true },
     });
 }
 //# sourceMappingURL=sparepart.service.js.map

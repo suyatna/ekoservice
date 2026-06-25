@@ -45,8 +45,7 @@ async function main() {
             nama: 'Administrator',
             email: 'admin@ekoservice.com',
             password: adminHash,
-            noTelp: null,
-            role: 'SUPER_ADMIN',
+            role: 'ADMIN',
             aktif: true,
         },
     });

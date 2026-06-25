@@ -5,6 +5,7 @@
 
 generator client {
   provider = "prisma-client-js"
+  output   = "../../node_modules/.prisma/client"
 }
 
 datasource db {
@@ -17,41 +18,14 @@ datasource db {
 // ──────────────────────────────────────────────────────────
 
 enum Role {
-  SUPER_ADMIN
-  ADMIN_OPERASIONAL
-  CUSTOMER
-  TEKNISI
-  FINANCE
-  WAREHOUSE
+  ADMIN
 }
 
 enum StatusBooking {
-  BOOKING_DIBUAT
-  MENUNGGU_PENUGASAN
-  TEKNISI_DITUGASKAN
-  TEKNISI_MENUJU_LOKASI
-  TEKNISI_TIBA
-  DIAGNOSIS_DIMULAI
-  PENAWARAN_DIBUAT
-  MENUNGGU_PERSETUJUAN_PELANGGAN
-  DISETUJUI_PELANGGAN
-  SERVIS_DIMULAI
-  SERVIS_SELESAI
-  MENUNGGU_PEMBAYARAN
-  PEMBAYARAN_DITERIMA
+  MENUNGGU
+  SERVIS
   SELESAI
-  DIBATALKAN_PELANGGAN
-  DIBATALKAN_ADMIN
-  DIBATALKAN_SISTEM
-}
-
-enum StatusPembayaran {
-  BELUM_DIBAYAR
-  MENUNGGU_PEMBAYARAN
-  DIBAYAR_SEBAGIAN
-  LUNAS
-  GAGAL
-  DIREFUND
+  DIBATALKAN
 }
 
 enum JenisTransaksi {
@@ -85,15 +59,13 @@ model User {
   nama      String
   email     String   @unique
   password  String   // hashed with argon2
-  noTelp    String?
-  role      Role     @default(CUSTOMER)
+  role      Role     @default(ADMIN)
   aktif     Boolean  @default(true)
   dibuatDi  DateTime @default(now())
   diupdateDi DateTime @updatedAt
 
   // Relations
   bookingsDibuat      Booking[]         @relation("BookingDibuatOleh")
-  bookingsDitugaskan  Booking[]         @relation("BookingDitugaskan")
   refreshTokens       RefreshToken[]
 
   @@index([email])
@@ -113,43 +85,27 @@ model Booking {
   // Customer info
   namaPelanggan   String
   noTelpPelanggan String
-  alamat          String
   kategori        KategoriLayanan
 
   // Service info
   tglBooking      DateTime
-  tglServis       DateTime?
-  catatan         String?
-  diagnosis       String?
 
-  // Status & assignment
-  status          StatusBooking @default(BOOKING_DIBUAT)
-  teknisiId       String?
+  // Status
+  status          StatusBooking @default(MENUNGGU)
   dibuatOlehId    String
-
-  // Financial
- estimasiBiaya    Decimal?      @db.Decimal(12, 0)
-  biayaAkhir       Decimal?      @db.Decimal(12, 0)
-  statusPembayaran StatusPembayaran @default(BELUM_DIBAYAR)
 
   // Timestamps
   dibuatDi        DateTime      @default(now())
   diupdateDi      DateTime      @updatedAt
-  selesaiDi       DateTime?
 
   // Relations
   dibuatOleh      User          @relation("BookingDibuatOleh", fields: [dibuatOlehId], references: [id])
-  teknisi         User?         @relation("BookingDitugaskan", fields: [teknisiId], references: [id])
-  transaksi       Transaksi[]
 
   @@index([idTampilan])
   @@index([status])
-  @@index([teknisiId])
   @@index([dibuatOlehId])
   @@index([kategori])
-  @@index([tglServis])
   @@index([tglBooking])
-  @@index([statusPembayaran])
   @@index([dibuatDi])
   @@map("bookings")
 }
@@ -165,21 +121,13 @@ model Transaksi {
   deskripsi   String
   jenis       JenisTransaksi
   nominal     Decimal        @db.Decimal(12, 0)
-  metodeBayar String?        // CASH, TRANSFER, QRIS
-
-  // Optional booking link
-  bookingId   String?
 
   // Timestamps
   dibuatDi    DateTime       @default(now())
   diupdateDi  DateTime       @updatedAt
 
-  // Relations
-  booking     Booking?        @relation(fields: [bookingId], references: [id])
-
   @@index([idTampilan])
   @@index([jenis])
-  @@index([bookingId])
   @@index([dibuatDi])
   @@map("transaksis")
 }
@@ -195,9 +143,7 @@ model Sparepart {
   nama        String
   kategori    KategoriSparepart
   stok        Int             @default(0)
-  stokMinimal Int             @default(5)
   satuan      String          @default("pcs")
-  hargaBeli   Decimal?        @db.Decimal(12, 0)
 
   // Timestamps
   dibuatDi    DateTime        @default(now())

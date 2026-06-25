@@ -7,9 +7,7 @@ export interface SparepartResponse {
   nama: string;
   kategori: string;
   stok: number;
-  stokMinimal: number;
   satuan: string;
-  hargaBeli: string | null;
 }
 
 export interface SparepartListResponse {

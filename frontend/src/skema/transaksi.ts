@@ -13,15 +13,13 @@ export const skemaTransaksiBuat = z.object({
   deskripsi: z.string().min(3, 'Deskripsi minimal 3 karakter').max(200),
   jenis: z.enum(['MASUK', 'KELUAR']),
   nominal: z.number().min(0, 'Nominal harus positif'),
-  metodeBayar: z.string().optional(),
-  bookingId: z.string().uuid().optional().nullable(),
+  dibuatDi: z.string().optional(),
 });
 
 export const skemaTransaksiUbah = z.object({
   deskripsi: z.string().min(3).max(200).optional(),
   jenis: z.enum(['MASUK', 'KELUAR']).optional(),
   nominal: z.number().min(0).optional(),
-  metodeBayar: z.string().optional().nullable(),
   dibuatDi: z.string().optional(),
 });
 

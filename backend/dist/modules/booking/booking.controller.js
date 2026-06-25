@@ -17,26 +17,22 @@ export class BookingController {
         const parsed = skemaBookingFilter.safeParse(query);
         if (!parsed.success)
             throw new ValidationError(fromZodError(parsed.error).message);
-        const user = request.user;
-        const result = await daftarBooking(parsed.data, user.sub, user.role);
+        const result = await daftarBooking(parsed.data);
         return reply.send(paginated(result.data, result.total, result.page, result.limit, request.requestId));
     }
     async getById(request, reply) {
-        const user = request.user;
-        const result = await getBookingById(request.params.id, user.sub, user.role);
+        const result = await getBookingById(request.params.id);
         return reply.send(ok(result, request.requestId));
     }
     async ubah(request, reply) {
         const parsed = skemaBookingUbah.safeParse(request.body);
         if (!parsed.success)
             throw new ValidationError(fromZodError(parsed.error).message);
-        const user = request.user;
-        const result = await ubahBooking(request.params.id, parsed.data, user.sub, user.role);
+        const result = await ubahBooking(request.params.id, parsed.data);
         return reply.send(ok(result, request.requestId));
     }
     async hapus(request, reply) {
-        const user = request.user;
-        await hapusBooking(request.params.id, user.role);
+        await hapusBooking(request.params.id);
         return reply.code(204).send();
     }
 }
