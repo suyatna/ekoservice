@@ -95,7 +95,6 @@ model User {
   bookingsDibuat      Booking[]         @relation("BookingDibuatOleh")
   bookingsDitugaskan  Booking[]         @relation("BookingDitugaskan")
   refreshTokens       RefreshToken[]
-  auditLogs           AuditLog[]
 
   @@index([email])
   @@index([role])
@@ -142,8 +141,6 @@ model Booking {
   dibuatOleh      User          @relation("BookingDibuatOleh", fields: [dibuatOlehId], references: [id])
   teknisi         User?         @relation("BookingDitugaskan", fields: [teknisiId], references: [id])
   transaksi       Transaksi[]
-  fotoServis      FotoServis[]
-  detailServis    DetailServis[]
 
   @@index([idTampilan])
   @@index([status])
@@ -206,52 +203,10 @@ model Sparepart {
   dibuatDi    DateTime        @default(now())
   diupdateDi  DateTime        @updatedAt
 
-  // Relations
-  detailServis DetailServis[]
-
   @@index([idTampilan])
   @@index([kategori])
   @@index([stok])
   @@map("spareparts")
-}
-
-// ──────────────────────────────────────────────────────────
-// FOTO SERVIS
-// ──────────────────────────────────────────────────────────
-
-model FotoServis {
-  id        String   @id @default(uuid())
-  url       String
-  jenis     String   // "diagnosis" | "progres" | "selesai"
-  caption   String?
-  bookingId String
-
-  dibuatDi  DateTime @default(now())
-
-  // Relations
-  booking   Booking  @relation(fields: [bookingId], references: [id], onDelete: Cascade)
-
-  @@index([bookingId])
-  @@map("foto_servis")
-}
-
-// ──────────────────────────────────────────────────────────
-// DETAIL SERVIS (sparepart used in a booking)
-// ──────────────────────────────────────────────────────────
-
-model DetailServis {
-  id          String    @id @default(uuid())
-  jumlah      Int       @default(1)
-  hargaSatuan Decimal   @db.Decimal(12, 0)
-  bookingId   String
-  sparepartId String
-
-  sparepart   Sparepart @relation(fields: [sparepartId], references: [id])
-  booking     Booking   @relation(fields: [bookingId], references: [id], onDelete: Cascade)
-
-  @@index([bookingId])
-  @@index([sparepartId])
-  @@map("detail_servis")
 }
 
 // ──────────────────────────────────────────────────────────
@@ -275,57 +230,4 @@ model RefreshToken {
   @@index([family])
   @@index([expiresDi])
   @@map("refresh_tokens")
-}
-
-// ──────────────────────────────────────────────────────────
-// API KEY (hashed, stored in DB)
-// ──────────────────────────────────────────────────────────
-
-model ApiKey {
-  id          String   @id @default(uuid())
-  nama        String   // e.g., "Frontend Production"
-  tokenHash   String   @unique // hashed version
-  permissions String[] // e.g., ["read:booking", "write:booking"]
-  aktif       Boolean  @default(true)
-  batasRate   Int?     // req/menit, null = unlimited
-  expiresDi   DateTime?
-  dibuatDi    DateTime @default(now())
-  diupdateDi  DateTime @updatedAt
-
-  auditLogs   AuditLog[]
-
-  @@index([tokenHash])
-  @@index([aktif])
-  @@map("api_keys")
-}
-
-// ──────────────────────────────────────────────────────────
-// AUDIT LOG (immutable, for compliance & security)
-// ──────────────────────────────────────────────────────────
-
-model AuditLog {
-  id          String    @id @default(uuid())
-  userId      String?
-  apiKeyId    String?
-  action      String    // e.g., "booking.create", "user.login"
-  resource    String    // e.g., "booking", "user"
-  resourceId  String?
-  oldData     Json?
-  newData     Json?
-  ipAddress   String?
-  userAgent   String?
-  requestId   String    // X-Request-ID from header
-  dibuatDi    DateTime  @default(now())
-
-  user        User?     @relation(fields: [userId], references: [id])
-  apiKey      ApiKey?   @relation(fields: [apiKeyId], references: [id])
-
-  @@index([userId])
-  @@index([apiKeyId])
-  @@index([action])
-  @@index([resource])
-  @@index([resourceId])
-  @@index([requestId])
-  @@index([dibuatDi])
-  @@map("audit_logs")
 }

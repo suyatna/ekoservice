@@ -1,0 +1,185 @@
+// EkoService - DB diagram untuk dbdiagram.io
+// Scope: tabel yang dipakai oleh frontend saat ini.
+// Catatan: frontend sparepart punya field hargaJual, tapi Prisma schema saat ini belum punya kolom itu.
+
+Project ekoservice {
+  database_type: "PostgreSQL"
+}
+
+Enum Role {
+  SUPER_ADMIN
+  ADMIN_OPERASIONAL
+  CUSTOMER
+  TEKNISI
+  FINANCE
+  WAREHOUSE
+}
+
+Enum StatusBooking {
+  BOOKING_DIBUAT
+  MENUNGGU_PENUGASAN
+  TEKNISI_DITUGASKAN
+  TEKNISI_MENUJU_LOKASI
+  TEKNISI_TIBA
+  DIAGNOSIS_DIMULAI
+  PENAWARAN_DIBUAT
+  MENUNGGU_PERSETUJUAN_PELANGGAN
+  DISETUJUI_PELANGGAN
+  SERVIS_DIMULAI
+  SERVIS_SELESAI
+  MENUNGGU_PEMBAYARAN
+  PEMBAYARAN_DITERIMA
+  SELESAI
+  DIBATALKAN_PELANGGAN
+  DIBATALKAN_ADMIN
+  DIBATALKAN_SISTEM
+}
+
+Enum StatusPembayaran {
+  BELUM_DIBAYAR
+  MENUNGGU_PEMBAYARAN
+  DIBAYAR_SEBAGIAN
+  LUNAS
+  GAGAL
+  DIREFUND
+}
+
+Enum JenisTransaksi {
+  MASUK
+  KELUAR
+}
+
+Enum KategoriLayanan {
+  SERVICE_AC
+  SERVICE_KULKAS
+  SERVICE_MESIN_CUCI
+  SERVICE_CHILLER
+  SERVICE_SHOWCASE
+  SERVICE_TV
+}
+
+Enum KategoriSparepart {
+  KULKAS
+  AC
+  MESIN_CUCI
+  SHOWCASE
+  TV
+}
+
+Table users {
+  id varchar [pk]
+  nama varchar [not null]
+  email varchar [not null, unique]
+  password varchar [not null]
+  noTelp varchar
+  role Role [not null, default: "CUSTOMER"]
+  aktif boolean [not null, default: true]
+  dibuatDi timestamp [not null]
+  diupdateDi timestamp [not null]
+
+  indexes {
+    email
+    role
+    aktif
+  }
+}
+
+Table bookings {
+  id varchar [pk]
+  idTampilan varchar [not null, unique]
+
+  namaPelanggan varchar [not null]
+  noTelpPelanggan varchar [not null]
+  alamat text [not null]
+  kategori KategoriLayanan [not null]
+
+  tglBooking timestamp [not null]
+  tglServis timestamp
+  catatan text
+  diagnosis text
+
+  status StatusBooking [not null, default: "BOOKING_DIBUAT"]
+  teknisiId varchar
+  dibuatOlehId varchar [not null]
+
+  estimasiBiaya decimal(12,0)
+  biayaAkhir decimal(12,0)
+  statusPembayaran StatusPembayaran [not null, default: "BELUM_DIBAYAR"]
+
+  dibuatDi timestamp [not null]
+  diupdateDi timestamp [not null]
+  selesaiDi timestamp
+
+  indexes {
+    idTampilan
+    status
+    teknisiId
+    dibuatOlehId
+    kategori
+    tglServis
+    tglBooking
+    statusPembayaran
+    dibuatDi
+  }
+}
+
+Table spareparts {
+  id varchar [pk]
+  idTampilan varchar [not null, unique]
+  nama varchar [not null]
+  kategori KategoriSparepart [not null]
+  stok int [not null, default: 0]
+  stokMinimal int [not null, default: 5]
+  satuan varchar [not null, default: "pcs"]
+  hargaBeli decimal(12,0)
+  dibuatDi timestamp [not null]
+  diupdateDi timestamp [not null]
+
+  indexes {
+    idTampilan
+    kategori
+    stok
+  }
+}
+
+Table transaksis {
+  id varchar [pk]
+  idTampilan varchar [not null, unique]
+  deskripsi text [not null]
+  jenis JenisTransaksi [not null]
+  nominal decimal(12,0) [not null]
+  metodeBayar varchar
+  bookingId varchar
+  dibuatDi timestamp [not null]
+  diupdateDi timestamp [not null]
+
+  indexes {
+    idTampilan
+    jenis
+    bookingId
+    dibuatDi
+  }
+}
+
+Table refresh_tokens {
+  id varchar [pk]
+  tokenHash varchar [not null, unique]
+  family varchar [not null]
+  userId varchar [not null]
+  expiresDi timestamp [not null]
+  dibuatDi timestamp [not null]
+  diupdateDi timestamp [not null]
+  diRevoke boolean [not null, default: false]
+
+  indexes {
+    tokenHash
+    userId
+    family
+    expiresDi
+  }
+}
+
+Ref: bookings.dibuatOlehId > users.id
+Ref: bookings.teknisiId > users.id
+Ref: transaksis.bookingId > bookings.id
+Ref: refresh_tokens.userId > users.id [delete: cascade]

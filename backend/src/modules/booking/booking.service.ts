@@ -95,10 +95,6 @@ export async function getBookingById(id: string, userId: string, userRole: Role)
         orderBy: { dibuatDi: 'desc' },
         select: { id: true, nominal: true, jenis: true, dibuatDi: true },
       },
-      fotoServis: {
-        orderBy: { dibuatDi: 'asc' },
-        select: { id: true, url: true, jenis: true, caption: true },
-      },
     },
   });
 

@@ -7,7 +7,6 @@ import { rateLimitPlugin } from './plugins/rate-limit.js';
 import { jwtPlugin } from './plugins/auth.js';
 import { createVerifier } from 'fast-jwt';
 import cookie from '@fastify/cookie';
-import { auditPlugin } from './middleware/audit-log.js';
 import { validateApiKey } from './middleware/validate-api-key.js';
 import { authRoutes } from './modules/auth/auth.routes.js';
 import { bookingRoutes } from './modules/booking/booking.routes.js';
@@ -31,7 +30,6 @@ export async function buildApp() {
     await fastify.register(rateLimitPlugin);
     await fastify.register(jwtPlugin);
     const jwtVerifier = createVerifier({ key: config.JWT_SECRET, algorithms: ['HS512'] });
-    await fastify.register(auditPlugin);
     // Health check (public)
     fastify.get('/health', async (request) => ({
         status: 'ok',
