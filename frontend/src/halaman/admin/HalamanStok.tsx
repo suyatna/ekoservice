@@ -8,7 +8,7 @@ import { toast } from 'sonner';
 import { sparepartLayanan } from '@/layanan/sparepart';
 import { kategoriSparepartOptions } from '@/skema/sparepart';
 
-const AUTO_SAVE_DELAY_MS = 700;
+const AUTO_SAVE_DELAY_MS = 10000;
 
 interface FormState {
   nama: string;

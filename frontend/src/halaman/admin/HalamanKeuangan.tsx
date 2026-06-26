@@ -11,7 +11,7 @@ import { tokenStorage } from '@/utils/token';
 import { toast } from 'sonner';
 
 type ExportRange = 'semua' | 'minggu' | 'bulan' | 'tahun';
-const AUTO_SAVE_DELAY_MS = 700;
+const AUTO_SAVE_DELAY_MS = 10000;
 
 function getDateRange(range: ExportRange) {
   const now = new Date();

@@ -10,7 +10,7 @@ import { toast } from 'sonner';
 
 const ALL_KATEGORI = Object.keys(kategoriOptions);
 const STATUS_GROUPS = Object.keys(statusGroupConfig);
-const AUTO_SAVE_DELAY_MS = 700;
+const AUTO_SAVE_DELAY_MS = 10000;
 
 function getGroupKey(bookingStatus: string): string {
   for (const [key, group] of Object.entries(statusGroupConfig)) {
