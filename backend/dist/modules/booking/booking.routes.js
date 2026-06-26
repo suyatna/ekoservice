@@ -19,7 +19,7 @@ export async function bookingRoutes(fastify) {
     });
     // PATCH /booking/:id
     fastify.patch('/:id', {
-        preHandler: [authorize('booking:ubah', 'tugas:ubah')],
+        preHandler: [authorize('booking:ubah')],
     }, async (request, reply) => {
         return bookingController.ubah(request, reply);
     });

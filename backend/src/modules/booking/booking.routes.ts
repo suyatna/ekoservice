@@ -24,7 +24,7 @@ export async function bookingRoutes(fastify: FastifyInstance) {
 
   // PATCH /booking/:id
   fastify.patch<{ Params: { id: string } }>('/:id', {
-    preHandler: [authorize('booking:ubah', 'tugas:ubah')],
+    preHandler: [authorize('booking:ubah')],
   }, async (request, reply) => {
     return bookingController.ubah(request, reply);
   });

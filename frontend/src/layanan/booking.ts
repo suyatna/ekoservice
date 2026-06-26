@@ -10,7 +10,6 @@ export interface BookingResponse {
   tglBooking: string;
   status: string;
   dibuatDi: string;
-  teknisi: { id: string; nama: string } | null;
   dibuatOleh: { id: string; nama: string };
 }
 

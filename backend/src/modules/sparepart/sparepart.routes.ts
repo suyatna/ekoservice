@@ -4,25 +4,25 @@ import { authorize } from '../../middleware/authorize.js';
 
 export async function sparepartRoutes(fastify: FastifyInstance) {
   fastify.get('/', {
-    preHandler: [authorize('stok:baca', 'sparepart:baca')],
+    preHandler: [authorize('sparepart:baca')],
   }, async (request, reply) => {
     return sparepartController.daftar(request, reply);
   });
 
   fastify.post('/', {
-    preHandler: [authorize('stok:bikin', 'sparepart:bikin')],
+    preHandler: [authorize('sparepart:bikin')],
   }, async (request, reply) => {
     return sparepartController.buat(request, reply);
   });
 
   fastify.patch<{ Params: { id: string } }>('/:id', {
-    preHandler: [authorize('stok:ubah', 'sparepart:ubah')],
+    preHandler: [authorize('sparepart:ubah')],
   }, async (request, reply) => {
     return sparepartController.ubah(request, reply);
   });
 
   fastify.delete<{ Params: { id: string } }>('/:id', {
-    preHandler: [authorize('stok:ubah', 'sparepart:ubah')],
+    preHandler: [authorize('sparepart:ubah')],
   }, async (request, reply) => {
     return sparepartController.hapus(request, reply);
   });

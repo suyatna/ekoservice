@@ -4,14 +4,14 @@ import { JenisTransaksi } from '@prisma/client';
 export const skemaTransaksiBuat = z.object({
   deskripsi: z.string().min(3).max(500).trim(),
   jenis: z.nativeEnum(JenisTransaksi),
-  nominal: z.number().min(1000, 'Nominal minimal Rp 1.000'),
+  nominal: z.number().min(0, 'Nominal harus positif'),
   dibuatDi: z.string().optional(),
 });
 
 export const skemaTransaksiUbah = z.object({
   deskripsi: z.string().min(3).max(500).optional(),
   jenis: z.nativeEnum(JenisTransaksi).optional(),
-  nominal: z.number().min(1000).optional(),
+  nominal: z.number().min(0).optional(),
   dibuatDi: z.string().optional(),
 });
 
