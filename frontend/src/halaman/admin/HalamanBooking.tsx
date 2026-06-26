@@ -10,6 +10,7 @@ import { toast } from 'sonner';
 
 const ALL_KATEGORI = Object.keys(kategoriOptions);
 const STATUS_GROUPS = Object.keys(statusGroupConfig);
+const AUTO_SAVE_DELAY_MS = 700;
 
 function getGroupKey(bookingStatus: string): string {
   for (const [key, group] of Object.entries(statusGroupConfig)) {
@@ -91,14 +92,17 @@ export default function HalamanBooking() {
   // Auto-save: buat row baru ke backend saat semua field terisi
   useEffect(() => {
     if (!barisBaru || !rowSelesai(barisBaru) || buatMutation.isPending) return;
-    const firstStatus = statusGroupConfig[barisBaru.status]?.statuses[0];
-    buatMutation.mutate({
-      namaPelanggan: barisBaru.nama,
-      kategori: barisBaru.kategori,
-      tglBooking: new Date(barisBaru.tglBooking).toISOString(),
-      noTelpPelanggan: barisBaru.noTelp,
-      status: firstStatus,
-    });
+    const timer = window.setTimeout(() => {
+      const firstStatus = statusGroupConfig[barisBaru.status]?.statuses[0];
+      buatMutation.mutate({
+        namaPelanggan: barisBaru.nama,
+        kategori: barisBaru.kategori,
+        tglBooking: new Date(barisBaru.tglBooking).toISOString(),
+        noTelpPelanggan: barisBaru.noTelp,
+        status: firstStatus,
+      });
+    }, AUTO_SAVE_DELAY_MS);
+    return () => window.clearTimeout(timer);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [barisBaru]);
 

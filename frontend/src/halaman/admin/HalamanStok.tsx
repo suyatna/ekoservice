@@ -8,6 +8,8 @@ import { toast } from 'sonner';
 import { sparepartLayanan } from '@/layanan/sparepart';
 import { kategoriSparepartOptions } from '@/skema/sparepart';
 
+const AUTO_SAVE_DELAY_MS = 700;
+
 interface FormState {
   nama: string;
   kategori: string;
@@ -61,12 +63,15 @@ export default function HalamanStok() {
   // Auto-save: buat row baru ke backend saat semua field terisi
   useEffect(() => {
     if (!barisBaru || !rowSelesai(barisBaru) || buatMutation.isPending) return;
-    buatMutation.mutate({
-      nama: barisBaru.nama,
-      kategori: barisBaru.kategori as any,
-      stok: Number(barisBaru.stok),
-      satuan: barisBaru.satuan,
-    });
+    const timer = window.setTimeout(() => {
+      buatMutation.mutate({
+        nama: barisBaru.nama,
+        kategori: barisBaru.kategori as any,
+        stok: Number(barisBaru.stok),
+        satuan: barisBaru.satuan,
+      });
+    }, AUTO_SAVE_DELAY_MS);
+    return () => window.clearTimeout(timer);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [barisBaru]);
 

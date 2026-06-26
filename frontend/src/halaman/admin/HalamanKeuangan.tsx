@@ -11,6 +11,7 @@ import { tokenStorage } from '@/utils/token';
 import { toast } from 'sonner';
 
 type ExportRange = 'semua' | 'minggu' | 'bulan' | 'tahun';
+const AUTO_SAVE_DELAY_MS = 700;
 
 function getDateRange(range: ExportRange) {
   const now = new Date();
@@ -92,7 +93,10 @@ export default function HalamanKeuangan() {
   // Auto-save: buat row baru ke backend saat semua field terisi
   useEffect(() => {
     if (!barisBaru || !rowSelesai(barisBaru) || buatMutation.isPending) return;
-    buatMutation.mutate({ deskripsi: barisBaru.deskripsi, jenis: barisBaru.jenis, nominal: Number(barisBaru.nominal), tgl: barisBaru.tgl });
+    const timer = window.setTimeout(() => {
+      buatMutation.mutate({ deskripsi: barisBaru.deskripsi, jenis: barisBaru.jenis, nominal: Number(barisBaru.nominal), tgl: barisBaru.tgl });
+    }, AUTO_SAVE_DELAY_MS);
+    return () => window.clearTimeout(timer);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [barisBaru]);
 

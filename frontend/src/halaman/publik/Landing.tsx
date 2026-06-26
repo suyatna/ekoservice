@@ -228,7 +228,7 @@ export const Landing = () => {
       <section
         id="fitur"
         className="relative min-h-[68vh] overflow-hidden bg-cover bg-center md:min-h-[75vh]"
-        style={{ backgroundImage: "url('/img/bg-hero.jpg')" }}
+        style={{ backgroundImage: "url('/img/bg-hero.webp')" }}
       >
         <div className="absolute inset-0 bg-gradient-to-b from-[#07090c]/80 via-[#0A0A0A]/72 via-58% to-[#0A0A0A]/90" />
         <div className="absolute inset-x-0 bottom-0 h-[18rem] bg-gradient-to-b from-transparent via-[#07090c]/90 to-[#0A0A0A]" />

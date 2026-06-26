@@ -11,8 +11,7 @@ export const skemaBookingBuat = z.object({
         .trim(),
     noTelpPelanggan: z
         .string()
-        .transform((value) => value.replace(/[\s.-]/g, ''))
-        .refine((value) => value === '' || /^(\+62|62|0)[0-9]{8,13}$/.test(value), 'Nomor WhatsApp tidak valid'),
+        .transform((value) => value.replace(/[\s.-]/g, '')),
     kategori: z.nativeEnum(KategoriLayanan),
     tglBooking: z.string().optional(),
     status: z.nativeEnum(StatusBooking).optional(),
@@ -27,7 +26,6 @@ export const skemaBookingUbah = z.object({
     noTelpPelanggan: z
         .string()
         .transform((value) => value.replace(/[\s.-]/g, ''))
-        .refine((value) => value === '' || /^(\+62|62|0)[0-9]{8,13}$/.test(value), 'Nomor WhatsApp tidak valid')
         .optional(),
     kategori: z.nativeEnum(KategoriLayanan).optional(),
     tglBooking: z.string().optional(),

@@ -30,8 +30,7 @@ export const skemaBookingBuat = z.object({
   namaPelanggan: z.string().min(2, 'Nama minimal 2 karakter').max(100).trim(),
   noTelpPelanggan: z
     .string()
-    .transform((value) => value.replace(/[\s.-]/g, ''))
-    .refine((value) => value === '' || /^(\+62|62|0)[0-9]{8,13}$/.test(value), 'Nomor WhatsApp tidak valid'),
+    .transform((value) => value.replace(/[\s.-]/g, '')),
   kategori: z.enum(['SERVICE_AC', 'SERVICE_KULKAS', 'SERVICE_MESIN_CUCI', 'SERVICE_CHILLER', 'SERVICE_SHOWCASE', 'SERVICE_TV']),
   tglBooking: z.string(),
 });
@@ -41,7 +40,6 @@ export const skemaBookingUbah = z.object({
   noTelpPelanggan: z
     .string()
     .transform((value) => value.replace(/[\s.-]/g, ''))
-    .refine((value) => value === '' || /^(\+62|62|0)[0-9]{8,13}$/.test(value), 'Nomor WhatsApp tidak valid')
     .optional(),
   kategori: z.enum(['SERVICE_AC', 'SERVICE_KULKAS', 'SERVICE_MESIN_CUCI', 'SERVICE_CHILLER', 'SERVICE_SHOWCASE', 'SERVICE_TV']).optional(),
   tglBooking: z.string().optional(),
