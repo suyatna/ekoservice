@@ -11,7 +11,6 @@ import { tokenStorage } from '@/utils/token';
 import { toast } from 'sonner';
 
 type ExportRange = 'semua' | 'minggu' | 'bulan' | 'tahun';
-const AUTO_SAVE_DELAY_MS = 10000;
 
 function getDateRange(range: ExportRange) {
   const now = new Date();
@@ -90,16 +89,6 @@ export default function HalamanKeuangan() {
     onError: () => toast.error('Gagal hapus transaksi'),
   });
 
-  // Auto-save: buat row baru ke backend saat semua field terisi
-  useEffect(() => {
-    if (!barisBaru || !rowSelesai(barisBaru) || buatMutation.isPending) return;
-    const timer = window.setTimeout(() => {
-      buatMutation.mutate({ deskripsi: barisBaru.deskripsi, jenis: barisBaru.jenis, nominal: Number(barisBaru.nominal), tgl: barisBaru.tgl });
-    }, AUTO_SAVE_DELAY_MS);
-    return () => window.clearTimeout(timer);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [barisBaru]);
-
   // Auto-clear draft: row sudah disentuh tapi dikosongkan → hapus
   useEffect(() => {
     if (!barisBaru || !rowBatal(barisBaru) || buatMutation.isPending) return;
@@ -119,6 +108,11 @@ export default function HalamanKeuangan() {
   const transaksi = data?.data ?? [];
 
   const API_KEY = import.meta.env.VITE_API_KEY;
+
+  const cobaBuatTransaksi = (next: FormState) => {
+    if (!rowSelesai(next) || buatMutation.isPending) return;
+    buatMutation.mutate({ deskripsi: next.deskripsi, jenis: next.jenis, nominal: Number(next.nominal), tgl: next.tgl });
+  };
 
   const handleExport = async () => {
     const params = new URLSearchParams();
@@ -209,37 +203,63 @@ export default function HalamanKeuangan() {
             </colgroup>
             <thead>
               <tr className="border-b border-[#2D2D2D]">
-                <th className="px-4 py-3 text-center text-xs font-semibold uppercase bg-utama text-black">Tanggal Transaksi</th>
-                <th className="px-4 py-3 text-center text-xs font-semibold uppercase bg-utama text-black">Detail</th>
                 <th className="px-4 py-3 text-center text-xs font-semibold uppercase bg-utama text-black">Jenis Transaksi</th>
+                <th className="px-4 py-3 text-center text-xs font-semibold uppercase bg-utama text-black">Detail</th>
                 <th className="px-4 py-3 text-center text-xs font-semibold uppercase bg-utama text-black">Nominal (Rp)</th>
+                <th className="px-4 py-3 text-center text-xs font-semibold uppercase bg-utama text-black">Tanggal Transaksi</th>
               </tr>
             </thead>
             <tbody>
               {barisBaru && (
                 <tr className="border-b border-[#2D2D2D] bg-utama/5">
                   <td className="px-3 py-2">
-                    <FormInput type="date" value={barisBaru.tgl || new Date().toISOString().split('T')[0]} onChange={(e) => setBarisBaru({ ...barisBaru, tgl: e.target.value, touched: true })} />
-                  </td>
-                  <td className="px-3 py-2">
-                    <FormInput
-                      value={barisBaru.deskripsi}
-                      onChange={(e) => setBarisBaru({ ...barisBaru, deskripsi: e.target.value, touched: true })}
-                      placeholder="Silahkan isi..."
-                    />
-                  </td>
-                  <td className="px-3 py-2">
-                    <FormSelect value={barisBaru.jenis} onChange={(e) => setBarisBaru({ ...barisBaru, jenis: e.target.value as any, touched: true })}>
+                    <FormSelect
+                      value={barisBaru.jenis}
+                      onChange={(e) => {
+                        const next = { ...barisBaru, jenis: e.target.value as any, touched: true };
+                        setBarisBaru(next);
+                        cobaBuatTransaksi(next);
+                      }}
+                    >
                       <option value="MASUK">Masuk</option>
                       <option value="KELUAR">Keluar</option>
                     </FormSelect>
                   </td>
                   <td className="px-3 py-2">
                     <FormInput
+                      value={barisBaru.deskripsi}
+                      onChange={(e) => setBarisBaru({ ...barisBaru, deskripsi: e.target.value, touched: true })}
+                      onBlur={(e) => {
+                        const next = { ...barisBaru, deskripsi: e.target.value, touched: true };
+                        setBarisBaru(next);
+                        cobaBuatTransaksi(next);
+                      }}
+                      placeholder="Silahkan isi..."
+                    />
+                  </td>
+                  <td className="px-3 py-2">
+                    <FormInput
                       type="number"
                       value={barisBaru.nominal}
                       onChange={(e) => setBarisBaru({ ...barisBaru, nominal: e.target.value, touched: true })}
+                      onBlur={(e) => {
+                        const next = { ...barisBaru, nominal: e.target.value, touched: true };
+                        setBarisBaru(next);
+                        cobaBuatTransaksi(next);
+                      }}
                       placeholder="Silahkan isi..."
+                    />
+                  </td>
+                  <td className="px-3 py-2">
+                    <FormInput
+                      type="date"
+                      value={barisBaru.tgl || new Date().toISOString().split('T')[0]}
+                      onChange={(e) => setBarisBaru({ ...barisBaru, tgl: e.target.value, touched: true })}
+                      onBlur={(e) => {
+                        const next = { ...barisBaru, tgl: e.target.value, touched: true };
+                        setBarisBaru(next);
+                        cobaBuatTransaksi(next);
+                      }}
                     />
                   </td>
                 </tr>
@@ -286,21 +306,13 @@ function TransaksiRow({ transaksi, ubahMutation, hapusMutation }: { transaksi: a
   return (
     <tr className="border-b border-[#2D2D2D] hover:bg-[#161616] transition-colors">
       <td className="px-3 py-2">
-        <FormInput
-          type="date"
-          value={tgl}
-          onChange={(e) => setTgl(e.target.value)}
-          onBlur={(e) => simpan({ tgl: e.target.value })}
-        />
-      </td>
-      <td className="px-3 py-2">
-        <FormInput value={deskripsi} onChange={(e) => setDeskripsi(e.target.value)} onBlur={(e) => simpan({ deskripsi: e.target.value })} />
-      </td>
-      <td className="px-3 py-2">
         <FormSelect value={jenis} onChange={(e) => { const next = e.target.value; setJenis(next); simpan({ jenis: next }); }}>
           <option value="MASUK">Masuk</option>
           <option value="KELUAR">Keluar</option>
         </FormSelect>
+      </td>
+      <td className="px-3 py-2">
+        <FormInput value={deskripsi} onChange={(e) => setDeskripsi(e.target.value)} onBlur={(e) => simpan({ deskripsi: e.target.value })} />
       </td>
       <td className="px-3 py-2">
         <FormInput
@@ -308,6 +320,14 @@ function TransaksiRow({ transaksi, ubahMutation, hapusMutation }: { transaksi: a
           value={nominal}
           onChange={(e) => setNominal(e.target.value)}
           onBlur={(e) => simpan({ nominal: e.target.value })}
+        />
+      </td>
+      <td className="px-3 py-2">
+        <FormInput
+          type="date"
+          value={tgl}
+          onChange={(e) => setTgl(e.target.value)}
+          onBlur={(e) => simpan({ tgl: e.target.value })}
         />
       </td>
     </tr>

@@ -41,12 +41,14 @@ Enum JenisTransaksi {
 Table users {
   id varchar [pk]
   nama varchar [not null]
+  username varchar [unique]
   email varchar [not null, unique]
   password varchar [not null]
   role Role [not null, default: "ADMIN"]
   aktif boolean [not null, default: true]
 
   indexes {
+    username
     email
     role
     aktif

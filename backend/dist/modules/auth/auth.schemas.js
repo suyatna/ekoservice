@@ -4,9 +4,12 @@ import { z } from 'zod';
 // Dipakai di: backend (Fastify) + frontend (React Hook Form)
 // ──────────────────────────────────────────────────────────
 export const skemaMasuk = z.object({
-    email: z
-        .string({ required_error: 'Email wajib diisi' })
-        .email('Format email tidak valid'),
+    username: z
+        .string({ required_error: 'Username wajib diisi' })
+        .min(3, 'Username minimal 3 karakter')
+        .max(50, 'Username maksimal 50 karakter')
+        .toLowerCase()
+        .trim(),
     password: z
         .string({ required_error: 'Password wajib diisi' })
         .min(8, 'Password minimal 8 karakter'),
@@ -47,6 +50,7 @@ export const skemaResetPassword = z.object({
 export const schemaUser = z.object({
     id: z.string(),
     nama: z.string(),
+    username: z.string().nullable().optional(),
     email: z.string(),
     role: z.string(),
     aktif: z.boolean(),

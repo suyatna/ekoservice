@@ -1,7 +1,7 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Mail, Lock, Eye, EyeOff } from 'lucide-react';
+import { ArrowLeft, User, Lock, Eye, EyeOff } from 'lucide-react';
 import { useState } from 'react';
 import { skemaMasuk } from '@/skema/auth';
 import { z } from 'zod';
@@ -24,7 +24,7 @@ export const Masuk = () => {
 
   const onSubmit = handleSubmit(async (v) => {
     try {
-      await masuk(v.email, v.password);
+      await masuk(v.username, v.password);
       nav('/admin/booking');
     } catch (err: any) {
       toast.error(err?.response?.data?.message ?? 'Login gagal');
@@ -54,15 +54,16 @@ export const Masuk = () => {
               <form onSubmit={onSubmit} className="space-y-5">
                 <div>
                   <div className="relative">
-                    <Mail
+                    <User
                       size={18}
                       className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-redup"
                     />
                     <FormInput
-                      type="email"
-                      placeholder="Email"
+                      type="text"
+                      placeholder="Username"
                       className="pl-10 pr-10"
-                      {...register('email')}
+                      autoComplete="username"
+                      {...register('username')}
                     />
                   </div>
                 </div>
@@ -76,6 +77,7 @@ export const Masuk = () => {
                       type={lihatPassword ? 'text' : 'password'}
                       placeholder="Password"
                       className="pl-10 pr-10"
+                      autoComplete="current-password"
                       {...register('password')}
                     />
                     <button

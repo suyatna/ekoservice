@@ -51,10 +51,10 @@ export async function authRoutes(fastify: FastifyInstance) {
       body: {
         type: 'object',
         properties: {
-          email: { type: 'string' },
+          username: { type: 'string' },
           password: { type: 'string' },
         },
-        required: ['email', 'password'],
+        required: ['username', 'password'],
       },
     },
   }, async (request, reply) => {

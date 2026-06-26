@@ -69,6 +69,7 @@ export async function daftar(data: SkemaDaftar): Promise<Omit<SchemaLoginRespons
     data: {
       id: generateUUID(),
       nama: data.nama,
+      username: data.email.split('@')[0]?.toLowerCase() ?? null,
       email: data.email,
       password: hashedPassword,
       role: 'ADMIN',
@@ -80,6 +81,7 @@ export async function daftar(data: SkemaDaftar): Promise<Omit<SchemaLoginRespons
     user: {
       id: user.id,
       nama: user.nama,
+      username: user.username,
       email: user.email,
       role: user.role,
       aktif: user.aktif,
@@ -90,11 +92,11 @@ export async function daftar(data: SkemaDaftar): Promise<Omit<SchemaLoginRespons
 // ── User Login ────────────────────────────────────────────
 
 export async function masuk(
-  email: string,
+  username: string,
   password: string
 ): Promise<Omit<SchemaLoginResponse, 'accessToken'>> {
-  const user = await prisma.user.findUnique({
-    where: { email: email.toLowerCase() },
+  const user = await prisma.user.findFirst({
+    where: { username: username.toLowerCase().trim() },
   });
 
   if (!user || !user.aktif) {
@@ -110,6 +112,7 @@ export async function masuk(
     user: {
       id: user.id,
       nama: user.nama,
+      username: user.username,
       email: user.email,
       role: user.role,
       aktif: user.aktif,
@@ -125,6 +128,7 @@ export async function getUserById(id: string) {
     select: {
       id: true,
       nama: true,
+      username: true,
       email: true,
       role: true,
       aktif: true,

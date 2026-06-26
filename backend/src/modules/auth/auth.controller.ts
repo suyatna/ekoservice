@@ -28,14 +28,14 @@ export class AuthController {
       throw new ValidationError('Body request tidak valid');
     }
 
-    const email = body['email'] as string | undefined;
+    const username = body['username'] as string | undefined;
     const password = body['password'] as string | undefined;
 
-    if (!email || !password) {
-      throw new ValidationError('Email dan password wajib diisi');
+    if (!username || !password) {
+      throw new ValidationError('Username dan password wajib diisi');
     }
 
-    const result = await masuk(email, password);
+    const result = await masuk(username, password);
 
     const payload: JwtPayload = {
       sub: result.user.id,

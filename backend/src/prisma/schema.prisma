@@ -57,6 +57,7 @@ enum KategoriSparepart {
 model User {
   id        String   @id @default(uuid())
   nama      String
+  username  String?  @unique
   email     String   @unique
   password  String   // hashed with argon2
   role      Role     @default(ADMIN)
@@ -69,6 +70,7 @@ model User {
   refreshTokens       RefreshToken[]
 
   @@index([email])
+  @@index([username])
   @@index([role])
   @@index([aktif])
   @@map("users")

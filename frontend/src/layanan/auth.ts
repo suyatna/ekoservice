@@ -7,6 +7,7 @@ import type { Role } from '@/types';
 export interface User {
   id: string;
   nama: string;
+  username?: string | null;
   email: string;
   role: Role;
   aktif: boolean;

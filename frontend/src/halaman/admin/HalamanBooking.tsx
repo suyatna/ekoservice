@@ -10,7 +10,6 @@ import { toast } from 'sonner';
 
 const ALL_KATEGORI = Object.keys(kategoriOptions);
 const STATUS_GROUPS = Object.keys(statusGroupConfig);
-const AUTO_SAVE_DELAY_MS = 10000;
 
 function getGroupKey(bookingStatus: string): string {
   for (const [key, group] of Object.entries(statusGroupConfig)) {
@@ -89,23 +88,6 @@ export default function HalamanBooking() {
     onError: () => toast.error('Gagal hapus booking'),
   });
 
-  // Auto-save: buat row baru ke backend saat semua field terisi
-  useEffect(() => {
-    if (!barisBaru || !rowSelesai(barisBaru) || buatMutation.isPending) return;
-    const timer = window.setTimeout(() => {
-      const firstStatus = statusGroupConfig[barisBaru.status]?.statuses[0];
-      buatMutation.mutate({
-        namaPelanggan: barisBaru.nama,
-        kategori: barisBaru.kategori,
-        tglBooking: new Date(barisBaru.tglBooking).toISOString(),
-        noTelpPelanggan: barisBaru.noTelp,
-        status: firstStatus,
-      });
-    }, AUTO_SAVE_DELAY_MS);
-    return () => window.clearTimeout(timer);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [barisBaru]);
-
   // Auto-clear draft: row sudah disentuh tapi dikosongkan → hapus
   useEffect(() => {
     if (!barisBaru || !rowBatal(barisBaru) || buatMutation.isPending) return;
@@ -127,6 +109,18 @@ export default function HalamanBooking() {
     const groupStatuses = statusGroupConfig[filterStatus].statuses;
     bookings = bookings.filter((b: any) => groupStatuses.includes(b.status));
   }
+
+  const cobaBuatBooking = (next: FormState) => {
+    if (!rowSelesai(next) || buatMutation.isPending) return;
+    const firstStatus = statusGroupConfig[next.status]?.statuses[0];
+    buatMutation.mutate({
+      namaPelanggan: next.nama,
+      kategori: next.kategori,
+      tglBooking: new Date(next.tglBooking).toISOString(),
+      noTelpPelanggan: next.noTelp,
+      status: firstStatus,
+    });
+  };
 
   return (
     <LayoutDashboard
@@ -187,9 +181,9 @@ export default function HalamanBooking() {
               <tr className="border-b border-[#2D2D2D]">
                 <th className="px-4 py-3 text-center text-xs font-semibold uppercase bg-utama text-black">Pelanggan</th>
                 <th className="px-4 py-3 text-center text-xs font-semibold uppercase bg-utama text-black">Service</th>
-                <th className="px-4 py-3 text-center text-xs font-semibold uppercase bg-utama text-black">Tanggal Booking</th>
                 <th className="px-4 py-3 text-center text-xs font-semibold uppercase bg-utama text-black">No. WhatsApp</th>
                 <th className="px-4 py-3 text-center text-xs font-semibold uppercase bg-utama text-black">Status</th>
+                <th className="px-4 py-3 text-center text-xs font-semibold uppercase bg-utama text-black">Tanggal Booking</th>
               </tr>
             </thead>
             <tbody>
@@ -199,32 +193,65 @@ export default function HalamanBooking() {
                     <FormInput
                       value={barisBaru.nama}
                       onChange={(e) => setBarisBaru({ ...barisBaru, nama: e.target.value, touched: true })}
+                      onBlur={(e) => {
+                        const next = { ...barisBaru, nama: e.target.value, touched: true };
+                        setBarisBaru(next);
+                        cobaBuatBooking(next);
+                      }}
                       placeholder="Silahkan isi..."
                     />
                   </td>
                   <td className="px-3 py-2">
-                    <FormSelect value={barisBaru.kategori} onChange={(e) => setBarisBaru({ ...barisBaru, kategori: e.target.value, touched: true })}>
+                    <FormSelect
+                      value={barisBaru.kategori}
+                      onChange={(e) => {
+                        const next = { ...barisBaru, kategori: e.target.value, touched: true };
+                        setBarisBaru(next);
+                        cobaBuatBooking(next);
+                      }}
+                    >
                       {ALL_KATEGORI.map((k) => (
                         <option key={k} value={k}>{kategoriOptions[k]}</option>
                       ))}
                     </FormSelect>
                   </td>
                   <td className="px-3 py-2">
-                    <FormInput type="date" value={barisBaru.tglBooking} onChange={(e) => setBarisBaru({ ...barisBaru, tglBooking: e.target.value, touched: true })} />
-                  </td>
-                  <td className="px-3 py-2">
                     <FormInput
                       value={barisBaru.noTelp}
                       onChange={(e) => setBarisBaru({ ...barisBaru, noTelp: e.target.value, touched: true })}
+                      onBlur={(e) => {
+                        const next = { ...barisBaru, noTelp: e.target.value, touched: true };
+                        setBarisBaru(next);
+                        cobaBuatBooking(next);
+                      }}
                       placeholder="Silahkan isi..."
                     />
                   </td>
                   <td className="px-3 py-2">
-                    <FormSelect value={barisBaru.status} onChange={(e) => setBarisBaru({ ...barisBaru, status: e.target.value, touched: true })}>
+                    <FormSelect
+                      value={barisBaru.status}
+                      onChange={(e) => {
+                        const next = { ...barisBaru, status: e.target.value, touched: true };
+                        setBarisBaru(next);
+                        cobaBuatBooking(next);
+                      }}
+                    >
                       {STATUS_GROUPS.map((g) => (
                         <option key={g} value={g}>{getGroupLabel(g)}</option>
                       ))}
                     </FormSelect>
+                  </td>
+                  <td className="px-3 py-2">
+                    <FormInput
+                      type="date"
+                      value={barisBaru.tglBooking}
+                      onChange={(e) => setBarisBaru({ ...barisBaru, tglBooking: e.target.value, touched: true })}
+                      onBlur={(e) => {
+                        const next = { ...barisBaru, tglBooking: e.target.value, touched: true };
+                        setBarisBaru(next);
+                        cobaBuatBooking(next);
+                      }}
+                    />
                   </td>
                 </tr>
               )}
@@ -288,9 +315,6 @@ function BookingRow({ booking, ubahMutation, hapusMutation }: { booking: any; ub
         </FormSelect>
       </td>
       <td className="px-3 py-2">
-        <FormInput type="date" value={tglBooking} onChange={(e) => setTglBooking(e.target.value)} onBlur={(e) => simpan({ tglBooking: e.target.value })} />
-      </td>
-      <td className="px-3 py-2">
         <FormInput value={noTelp} onChange={(e) => setNoTelp(e.target.value)} onBlur={(e) => simpan({ noTelp: e.target.value })} />
       </td>
       <td className="px-3 py-2">
@@ -299,6 +323,9 @@ function BookingRow({ booking, ubahMutation, hapusMutation }: { booking: any; ub
             <option key={g} value={g}>{getGroupLabel(g)}</option>
           ))}
         </FormSelect>
+      </td>
+      <td className="px-3 py-2">
+        <FormInput type="date" value={tglBooking} onChange={(e) => setTglBooking(e.target.value)} onBlur={(e) => simpan({ tglBooking: e.target.value })} />
       </td>
     </tr>
   );

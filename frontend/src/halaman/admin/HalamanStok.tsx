@@ -8,8 +8,6 @@ import { toast } from 'sonner';
 import { sparepartLayanan } from '@/layanan/sparepart';
 import { kategoriSparepartOptions } from '@/skema/sparepart';
 
-const AUTO_SAVE_DELAY_MS = 10000;
-
 interface FormState {
   nama: string;
   kategori: string;
@@ -60,21 +58,6 @@ export default function HalamanStok() {
     onError: () => toast.error('Gagal hapus sparepart'),
   });
 
-  // Auto-save: buat row baru ke backend saat semua field terisi
-  useEffect(() => {
-    if (!barisBaru || !rowSelesai(barisBaru) || buatMutation.isPending) return;
-    const timer = window.setTimeout(() => {
-      buatMutation.mutate({
-        nama: barisBaru.nama,
-        kategori: barisBaru.kategori as any,
-        stok: Number(barisBaru.stok),
-        satuan: barisBaru.satuan,
-      });
-    }, AUTO_SAVE_DELAY_MS);
-    return () => window.clearTimeout(timer);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [barisBaru]);
-
   // Auto-clear draft: jika user kosongkan semua field, kosongkan state (row belum di-save)
   useEffect(() => {
     if (!barisBaru || !rowKosong(barisBaru) || buatMutation.isPending) return;
@@ -84,11 +67,24 @@ export default function HalamanStok() {
 
   const ubahMutation = useMutation({
     mutationFn: ({ id, data: d }: { id: string; data: any }) => sparepartLayanan.ubah(id, d),
-    onSuccess: () => qc.invalidateQueries({ queryKey: ['sparepart'] }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['sparepart'] });
+      toast.success('Sparepart diupdate');
+    },
     onError: () => toast.error('Gagal update sparepart'),
   });
 
   const spareparts = data?.data ?? [];
+
+  const cobaBuatSparepart = (next: FormState) => {
+    if (!rowSelesai(next) || buatMutation.isPending) return;
+    buatMutation.mutate({
+      nama: next.nama,
+      kategori: next.kategori as any,
+      stok: Number(next.stok),
+      satuan: next.satuan,
+    });
+  };
 
   return (
     <LayoutDashboard
@@ -148,11 +144,23 @@ export default function HalamanStok() {
                     <FormInput
                       value={barisBaru.nama}
                       onChange={(e) => setBarisBaru({ ...barisBaru, nama: e.target.value })}
+                      onBlur={(e) => {
+                        const next = { ...barisBaru, nama: e.target.value };
+                        setBarisBaru(next);
+                        cobaBuatSparepart(next);
+                      }}
                       placeholder="Silahkan isi..."
                     />
                   </td>
                   <td className="px-3 py-2">
-                    <FormSelect value={barisBaru.kategori} onChange={(e) => setBarisBaru({ ...barisBaru, kategori: e.target.value })}>
+                    <FormSelect
+                      value={barisBaru.kategori}
+                      onChange={(e) => {
+                        const next = { ...barisBaru, kategori: e.target.value };
+                        setBarisBaru(next);
+                        cobaBuatSparepart(next);
+                      }}
+                    >
                       {Object.entries(kategoriSparepartOptions).map(([k, v]) => (
                         <option key={k} value={k}>{v}</option>
                       ))}
@@ -163,6 +171,11 @@ export default function HalamanStok() {
                       type="number"
                       value={barisBaru.stok}
                       onChange={(e) => setBarisBaru({ ...barisBaru, stok: e.target.value })}
+                      onBlur={(e) => {
+                        const next = { ...barisBaru, stok: e.target.value };
+                        setBarisBaru(next);
+                        cobaBuatSparepart(next);
+                      }}
                       placeholder="Silahkan isi..."
                     />
                   </td>
@@ -170,6 +183,11 @@ export default function HalamanStok() {
                     <FormInput
                       value={barisBaru.satuan}
                       onChange={(e) => setBarisBaru({ ...barisBaru, satuan: e.target.value })}
+                      onBlur={(e) => {
+                        const next = { ...barisBaru, satuan: e.target.value };
+                        setBarisBaru(next);
+                        cobaBuatSparepart(next);
+                      }}
                       placeholder="Silahkan isi..."
                     />
                   </td>

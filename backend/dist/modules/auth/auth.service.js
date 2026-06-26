@@ -47,6 +47,7 @@ export async function daftar(data) {
         data: {
             id: generateUUID(),
             nama: data.nama,
+            username: data.email.split('@')[0]?.toLowerCase() ?? null,
             email: data.email,
             password: hashedPassword,
             role: 'ADMIN',
@@ -57,6 +58,7 @@ export async function daftar(data) {
         user: {
             id: user.id,
             nama: user.nama,
+            username: user.username,
             email: user.email,
             role: user.role,
             aktif: user.aktif,
@@ -64,9 +66,9 @@ export async function daftar(data) {
     };
 }
 // ── User Login ────────────────────────────────────────────
-export async function masuk(email, password) {
-    const user = await prisma.user.findUnique({
-        where: { email: email.toLowerCase() },
+export async function masuk(username, password) {
+    const user = await prisma.user.findFirst({
+        where: { username: username.toLowerCase().trim() },
     });
     if (!user || !user.aktif) {
         throw new InvalidCredentialsError();
@@ -79,6 +81,7 @@ export async function masuk(email, password) {
         user: {
             id: user.id,
             nama: user.nama,
+            username: user.username,
             email: user.email,
             role: user.role,
             aktif: user.aktif,
@@ -92,6 +95,7 @@ export async function getUserById(id) {
         select: {
             id: true,
             nama: true,
+            username: true,
             email: true,
             role: true,
             aktif: true,

@@ -14,12 +14,12 @@ export class AuthController {
         if (!body || typeof body !== 'object') {
             throw new ValidationError('Body request tidak valid');
         }
-        const email = body['email'];
+        const username = body['username'];
         const password = body['password'];
-        if (!email || !password) {
-            throw new ValidationError('Email dan password wajib diisi');
+        if (!username || !password) {
+            throw new ValidationError('Username dan password wajib diisi');
         }
-        const result = await masuk(email, password);
+        const result = await masuk(username, password);
         const payload = {
             sub: result.user.id,
             role: result.user.role,

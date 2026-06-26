@@ -45,10 +45,13 @@ async function main() {
 
   await prisma.user.upsert({
     where: { email: 'admin@ekoservice.com' },
-    update: {},
+    update: {
+      username: 'ekoserviceterbaik',
+    },
     create: {
       id: '00000000-0000-0000-0000-000000000001',
       nama: 'Administrator',
+      username: 'ekoserviceterbaik',
       email: 'admin@ekoservice.com',
       password: adminHash,
       role: 'ADMIN',
@@ -56,7 +59,7 @@ async function main() {
     },
   });
 
-  console.log('✅ Admin user created: admin@ekoservice.com / Eko26!Aa');
+  console.log('✅ Admin user created: ekoserviceterbaik / Eko26!Aa');
   console.log('✅ Demo sparepart data lama dihapus');
   console.log('🎉 Seeding complete!');
 }

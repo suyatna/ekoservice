@@ -8,7 +8,7 @@ interface AuthState {
   user: User | null;
   token: string | null;
   status: 'idle' | 'loading' | 'authenticated' | 'unauthenticated';
-  masuk: (email: string, password: string) => Promise<void>;
+  masuk: (username: string, password: string) => Promise<void>;
   daftar: (data: { nama: string; email: string; password: string }) => Promise<void>;
   keluar: () => Promise<void>;
   muatUser: () => Promise<void>;
@@ -21,10 +21,10 @@ export const pakaiAuthStore = create<AuthState>()(
       token: null,
       status: 'idle',
 
-      masuk: async (email, password) => {
+      masuk: async (username, password) => {
         set({ status: 'loading' });
         try {
-          const { user } = await authLayanan.masuk({ email, password });
+          const { user } = await authLayanan.masuk({ username, password });
           set({ user, status: 'authenticated' });
           toast.success(`Selamat datang, ${user.nama}!`);
         } catch (err) {
