@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { LayoutDashboard } from '@/komponen/layout/LayoutDashboard';
 import { FormSelect } from '@/komponen/form/FormSelect';
@@ -40,15 +40,7 @@ interface FormState {
 const kosongTransaksi = (): FormState => ({ deskripsi: '', jenis: 'MASUK', nominal: '', tgl: new Date().toISOString().split('T')[0], touched: false });
 
 function rowSelesai(f: FormState) {
-  return f.deskripsi.trim() !== '' && f.nominal.trim() !== '' && !isNaN(Number(f.nominal)) && Number(f.nominal) > 0;
-}
-
-function rowKosong(f: FormState) {
-  return f.deskripsi.trim() === '' && f.nominal.trim() === '';
-}
-
-function rowBatal(f: FormState) {
-  return f.touched && rowKosong(f);
+  return f.deskripsi.trim() !== '' && f.nominal.trim() !== '' && Number.isFinite(Number(f.nominal)) && Number(f.nominal) > 0 && f.tgl !== '' && !Number.isNaN(new Date(f.tgl).getTime());
 }
 
 export default function HalamanKeuangan() {
@@ -89,13 +81,6 @@ export default function HalamanKeuangan() {
     onError: () => toast.error('Gagal hapus transaksi'),
   });
 
-  // Auto-clear draft: row sudah disentuh tapi dikosongkan → hapus
-  useEffect(() => {
-    if (!barisBaru || !rowBatal(barisBaru) || buatMutation.isPending) return;
-    setBarisBaru(null);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [barisBaru]);
-
   const ubahMutation = useMutation({
     mutationFn: ({ id, data: d }: { id: string; data: any }) => transaksiLayanan.ubah(id, d),
     onSuccess: () => {
@@ -111,7 +96,7 @@ export default function HalamanKeuangan() {
 
   const cobaBuatTransaksi = (next: FormState) => {
     if (!rowSelesai(next) || buatMutation.isPending) return;
-    buatMutation.mutate({ deskripsi: next.deskripsi, jenis: next.jenis, nominal: Number(next.nominal), tgl: next.tgl });
+    buatMutation.mutate({ deskripsi: next.deskripsi, jenis: next.jenis, nominal: Number(next.nominal), dibuatDi: new Date(next.tgl).toISOString() });
   };
 
   const handleExport = async () => {

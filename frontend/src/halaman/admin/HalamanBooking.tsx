@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { LayoutDashboard } from '@/komponen/layout/LayoutDashboard';
 import { FormSelect } from '@/komponen/form/FormSelect';
@@ -36,15 +36,7 @@ const kosongBooking = (): FormState => ({
 });
 
 function rowSelesai(f: FormState) {
-  return f.nama.trim() !== '' && f.tglBooking !== '' && f.noTelp.trim() !== '';
-}
-
-function rowKosong(f: FormState) {
-  return f.nama.trim() === '' && f.tglBooking === '' && f.noTelp.trim() === '';
-}
-
-function rowBatal(f: FormState) {
-  return f.touched && rowKosong(f);
+  return f.nama.trim() !== '' && f.tglBooking !== '' && !Number.isNaN(new Date(f.tglBooking).getTime()) && f.noTelp.trim() !== '';
 }
 
 export default function HalamanBooking() {
@@ -87,13 +79,6 @@ export default function HalamanBooking() {
     },
     onError: () => toast.error('Gagal hapus booking'),
   });
-
-  // Auto-clear draft: row sudah disentuh tapi dikosongkan → hapus
-  useEffect(() => {
-    if (!barisBaru || !rowBatal(barisBaru) || buatMutation.isPending) return;
-    setBarisBaru(null);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [barisBaru]);
 
   const ubahMutation = useMutation({
     mutationFn: ({ id, data: d }: { id: string; data: any }) => bookingLayanan.ubah(id, d),

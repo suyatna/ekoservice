@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { LayoutDashboard } from '@/komponen/layout/LayoutDashboard';
 import { FormSelect } from '@/komponen/form/FormSelect';
@@ -20,11 +20,8 @@ const kosongSparepart = (): FormState => ({
 });
 
 function rowSelesai(f: FormState) {
-  return f.nama.trim() !== '' && f.stok.trim() !== '' && f.satuan.trim() !== '';
-}
-
-function rowKosong(f: FormState) {
-  return f.nama.trim() === '' && f.stok.trim() === '' && f.satuan.trim() === '';
+  const stok = Number(f.stok);
+  return f.nama.trim() !== '' && f.stok.trim() !== '' && Number.isFinite(stok) && stok >= 0 && f.satuan.trim() !== '';
 }
 
 export default function HalamanStok() {
@@ -57,13 +54,6 @@ export default function HalamanStok() {
     },
     onError: () => toast.error('Gagal hapus sparepart'),
   });
-
-  // Auto-clear draft: jika user kosongkan semua field, kosongkan state (row belum di-save)
-  useEffect(() => {
-    if (!barisBaru || !rowKosong(barisBaru) || buatMutation.isPending) return;
-    setBarisBaru(null);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [barisBaru]);
 
   const ubahMutation = useMutation({
     mutationFn: ({ id, data: d }: { id: string; data: any }) => sparepartLayanan.ubah(id, d),

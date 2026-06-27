@@ -1,0 +1,1 @@
+import{j as x}from"./index-CLXigP0z.js";import{a}from"./tombol-CxzJKm71.js";const t=({children:s,className:p})=>x.jsx("div",{className:a("mx-auto w-full max-w-7xl px-4 sm:px-5 md:px-8 lg:px-10 xl:px-12",p),children:s}),l=({children:s,className:p})=>x.jsx("section",{className:a("py-8 md:py-12 lg:py-14",p),children:s});export{t as C,l as S};
