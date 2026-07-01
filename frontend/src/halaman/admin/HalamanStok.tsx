@@ -3,9 +3,10 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { LayoutDashboard } from '@/komponen/layout/LayoutDashboard';
 import { FormSelect } from '@/komponen/form/FormSelect';
 import { FormInput } from '@/komponen/form/FormInput';
-import { Search, Loader2 } from 'lucide-react';
+import { CircleNotch, MagnifyingGlass } from '@phosphor-icons/react';
 import { toast } from 'sonner';
 import { sparepartLayanan } from '@/layanan/sparepart';
+import { pesanErrorApi } from '@/layanan/api';
 import { kategoriSparepartOptions } from '@/skema/sparepart';
 
 interface FormState {
@@ -13,10 +14,11 @@ interface FormState {
   kategori: string;
   stok: string;
   satuan: string;
+  touched?: boolean;
 }
 
 const kosongSparepart = (): FormState => ({
-  nama: '', kategori: 'AC', stok: '', satuan: 'pcs',
+  nama: '', kategori: 'AC', stok: '', satuan: 'pcs', touched: false,
 });
 
 function rowSelesai(f: FormState) {
@@ -30,7 +32,7 @@ export default function HalamanStok() {
   const [filterKategori, setFilterKategori] = useState('');
   const [barisBaru, setBarisBaru] = useState<FormState | null>(null);
 
-  const { data, isLoading, isError } = useQuery({
+  const { data, isLoading, isError, error } = useQuery({
     queryKey: ['sparepart', { search, filterKategori }],
     queryFn: () => sparepartLayanan.daftar({ page: 1, limit: 100, search, kategori: filterKategori }),
     staleTime: 30_000,
@@ -43,7 +45,7 @@ export default function HalamanStok() {
       setBarisBaru(null);
       toast.success('Sparepart dibuat');
     },
-    onError: () => toast.error('Gagal buat sparepart'),
+    onError: (err) => toast.error(pesanErrorApi(err, 'Gagal buat sparepart')),
   });
 
   const hapusMutation = useMutation({
@@ -52,7 +54,7 @@ export default function HalamanStok() {
       qc.invalidateQueries({ queryKey: ['sparepart'] });
       toast.success('Sparepart dihapus');
     },
-    onError: () => toast.error('Gagal hapus sparepart'),
+    onError: (err) => toast.error(pesanErrorApi(err, 'Gagal hapus sparepart')),
   });
 
   const ubahMutation = useMutation({
@@ -61,7 +63,7 @@ export default function HalamanStok() {
       qc.invalidateQueries({ queryKey: ['sparepart'] });
       toast.success('Sparepart diupdate');
     },
-    onError: () => toast.error('Gagal update sparepart'),
+    onError: (err) => toast.error(pesanErrorApi(err, 'Gagal update sparepart')),
   });
 
   const spareparts = data?.data ?? [];
@@ -79,11 +81,12 @@ export default function HalamanStok() {
   return (
     <LayoutDashboard
       showTambah
-      onTambah={() => setBarisBaru(kosongSparepart())}
+      tambahAktif={!!barisBaru}
+      onTambah={() => setBarisBaru((prev) => (prev ? null : kosongSparepart()))}
       searchSlot={
         <div className="flex flex-1 flex-col gap-2 sm:flex-row sm:items-center sm:gap-3">
           <div className="relative w-full sm:flex-1">
-            <Search size={18} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-redup" />
+            <MagnifyingGlass size={22} weight="fill" className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-redup" />
             <input
               type="text"
               className="w-full bg-transparent pl-9 pr-3 py-2 text-sm text-teks placeholder:text-redup rounded-lg border border-borderHalus focus:outline-none focus:border-utama/60"
@@ -101,15 +104,15 @@ export default function HalamanStok() {
         </div>
       }
     >
-      <div className="kartu overflow-x-auto">
+      <div className="kartu w-full overflow-x-auto overscroll-x-contain pb-2">
         {isLoading ? (
           <div className="flex flex-col items-center justify-center py-16 gap-3">
-            <Loader2 size={28} className="text-redup animate-spin" />
-            <p className="text-sm text-redup">Memuat data sparepart...</p>
+            <CircleNotch size={22} weight="fill" className="text-redup animate-spin" />
+            <p className="text-sm text-redup">Memuat data...</p>
           </div>
         ) : isError ? (
           <div className="flex flex-col items-center justify-center py-16">
-            <p className="text-sm text-bahaya">Gagal memuat data sparepart</p>
+            <p className="text-sm text-bahaya">{pesanErrorApi(error, 'Gagal memuat data')}</p>
           </div>
         ) : (
           <table className="min-w-[680px] text-sm table-fixed md:w-full">
@@ -120,22 +123,23 @@ export default function HalamanStok() {
               <col className="w-1/4" />
             </colgroup>
             <thead>
-              <tr className="border-b border-[#2D2D2D]">
-                <th className="px-4 py-3 text-center text-xs font-semibold uppercase bg-utama text-black">Nama Sparepart</th>
-                <th className="px-4 py-3 text-center text-xs font-semibold uppercase bg-utama text-black">Kategori</th>
-                <th className="px-4 py-3 text-center text-xs font-semibold uppercase bg-utama text-black">Jumlah Stok</th>
-                <th className="px-4 py-3 text-center text-xs font-semibold uppercase bg-utama text-black">Satuan</th>
+              <tr className="border-b border-[#2A3639]">
+                <th className="px-4 py-3 text-center text-xs font-semibold uppercase bg-utama text-white">Nama Sparepart</th>
+                <th className="px-4 py-3 text-center text-xs font-semibold uppercase bg-utama text-white">Kategori</th>
+                <th className="px-4 py-3 text-center text-xs font-semibold uppercase bg-utama text-white">Jumlah Stok</th>
+                <th className="px-4 py-3 text-center text-xs font-semibold uppercase bg-utama text-white">Satuan</th>
               </tr>
             </thead>
             <tbody>
               {barisBaru && (
-                <tr className="border-b border-[#2D2D2D] bg-utama/5">
+                <tr className="border-b border-[#2A3639] bg-utama/5">
                   <td className="px-3 py-2">
                     <FormInput
                       value={barisBaru.nama}
-                      onChange={(e) => setBarisBaru({ ...barisBaru, nama: e.target.value })}
+                      error={barisBaru.touched && barisBaru.nama.trim() === '' ? 'Nama wajib diisi' : undefined}
+                      onChange={(e) => setBarisBaru({ ...barisBaru, nama: e.target.value, touched: true })}
                       onBlur={(e) => {
-                        const next = { ...barisBaru, nama: e.target.value };
+                        const next = { ...barisBaru, nama: e.target.value, touched: true };
                         setBarisBaru(next);
                         cobaBuatSparepart(next);
                       }}
@@ -146,9 +150,8 @@ export default function HalamanStok() {
                     <FormSelect
                       value={barisBaru.kategori}
                       onChange={(e) => {
-                        const next = { ...barisBaru, kategori: e.target.value };
+                        const next = { ...barisBaru, kategori: e.target.value, touched: true };
                         setBarisBaru(next);
-                        cobaBuatSparepart(next);
                       }}
                     >
                       {Object.entries(kategoriSparepartOptions).map(([k, v]) => (
@@ -160,9 +163,10 @@ export default function HalamanStok() {
                     <FormInput
                       type="number"
                       value={barisBaru.stok}
-                      onChange={(e) => setBarisBaru({ ...barisBaru, stok: e.target.value })}
+                      error={barisBaru.touched && !Number.isFinite(Number(barisBaru.stok)) ? 'Stok wajib angka' : undefined}
+                      onChange={(e) => setBarisBaru({ ...barisBaru, stok: e.target.value, touched: true })}
                       onBlur={(e) => {
-                        const next = { ...barisBaru, stok: e.target.value };
+                        const next = { ...barisBaru, stok: e.target.value, touched: true };
                         setBarisBaru(next);
                         cobaBuatSparepart(next);
                       }}
@@ -172,14 +176,24 @@ export default function HalamanStok() {
                   <td className="px-3 py-2">
                     <FormInput
                       value={barisBaru.satuan}
-                      onChange={(e) => setBarisBaru({ ...barisBaru, satuan: e.target.value })}
+                      error={barisBaru.touched && barisBaru.satuan.trim() === '' ? 'Satuan wajib diisi' : undefined}
+                      onChange={(e) => setBarisBaru({ ...barisBaru, satuan: e.target.value, touched: true })}
                       onBlur={(e) => {
-                        const next = { ...barisBaru, satuan: e.target.value };
+                        const next = { ...barisBaru, satuan: e.target.value, touched: true };
                         setBarisBaru(next);
                         cobaBuatSparepart(next);
                       }}
                       placeholder="Silahkan isi..."
                     />
+                  </td>
+                </tr>
+              )}
+              {spareparts.length === 0 && !barisBaru && (
+                <tr>
+                  <td colSpan={4} className="px-4 py-12 text-center">
+                    <p className="text-sm text-teks2" style={{ fontFamily: "'Farro', sans-serif", textTransform: 'none' }}>
+                      Data tidak tersedia
+                    </p>
                   </td>
                 </tr>
               )}
@@ -211,6 +225,10 @@ function SparepartRow({ sparepart, ubahMutation, hapusMutation }: { sparepart: a
       hapusMutation.mutate(sparepart.id);
       return;
     }
+    if (!Number.isFinite(Number(nextStok)) || Number(nextStok) < 0) {
+      toast.error('Jumlah stok harus angka 0 atau lebih');
+      return;
+    }
 
     // Bangun object hanya dengan field yang terisi
     const data: Record<string, unknown> = {};
@@ -223,7 +241,7 @@ function SparepartRow({ sparepart, ubahMutation, hapusMutation }: { sparepart: a
   };
 
   return (
-    <tr className="border-b border-[#2D2D2D] hover:bg-[#161616] transition-colors">
+    <tr className="border-b border-[#2A3639] hover:bg-panelHover transition-colors">
       <td className="px-3 py-2">
         <FormInput value={nama} onChange={(e) => setNama(e.target.value)} onBlur={(e) => simpan({ nama: e.target.value })} />
       </td>

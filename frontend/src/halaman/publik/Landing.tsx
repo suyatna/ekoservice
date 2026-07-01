@@ -2,16 +2,19 @@ import { Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import {
   X,
+  Fan,
+  MapPin,
   Snowflake,
-  Refrigerator,
+  Storefront,
+  ThermometerCold,
   WashingMachine,
-  Tv,
+  Television,
   Wallet,
-  BadgeCheck,
+  SealCheck,
   ShieldCheck,
-  Zap,
-  Menu as MenuIcon
-} from 'lucide-react';
+  Lightning,
+  List
+} from '@phosphor-icons/react';
 import { Tombol } from '@/komponen/ui/tombol';
 import { ContainerPublik, SectionWrapper } from '@/komponen/layout/Container';
 import { PetaPreviewLokasi } from '@/komponen/peta/PetaPreviewLokasi';
@@ -20,37 +23,37 @@ import Footer from '@/components/Footer';
 const testimoni = [
   {
     nama: 'Nurul Qomariah',
-    peran: 'Reviewer di Google Maps',
+    peran: 'Reviewer',
     isi: 'Pelayanannya cepat, rapih dan ramah. Alhamdulillah mesin cucinya kembali normal, jadi batal beli mesin cuci baru',
     foto: '/img/avatar.png'
   },
   {
     nama: 'Ghassani Hashifah',
-    peran: 'Reviewer di Google Maps',
+    peran: 'Reviewer',
     isi: 'Fast respon, pengerjaan rapih cepat dan bersih. Harga service termurah dr yang saya cari2. Terima kasih banyak pak eko!',
     foto: '/img/avatar.png'
   },
   {
     nama: 'Nur Rachim',
-    peran: 'Reviewer di Google Maps',
+    peran: 'Reviewer',
     isi: 'Teknisi ramah, jujur, dan baik membagikan pengalaman terkait masalah mesin cuci. Sukses selalu untuk pak eko🙏',
     foto: '/img/avatar.png'
   },
   {
     nama: 'Muhammad Taufiq Hidayat',
-    peran: 'Reviewer di Google Maps',
+    peran: 'Reviewer',
     isi: 'Orang nya ramah.. dan berpengalaman... Tidak asal tebak2an.. di benerin dulu dari awal.. seringkasih pak... Mantap',
     foto: '/img/avatar.png'
   },
   {
     nama: 'Nadhiroh Rahma',
-    peran: 'Reviewer di Google Maps',
+    peran: 'Reviewer',
     isi: 'sangat recommended. mengerti kerusakan dan solusi nya,kerja nya juga cepat. inshaAllah amanah👍🏼 …',
     foto: '/img/avatar.png'
   },
   {
     nama: 'Lissa Handayani',
-    peran: 'Reviewer di Google Maps',
+    peran: 'Reviewer',
     isi: 'Alhamdulillah kulkas sy sdh kembali normal. Pengerjaan cepat sat set langsung tau problemny dmn.. terima kasih pak eko..',
     foto: '/img/avatar.png'
   }
@@ -108,6 +111,17 @@ export const Landing = () => {
     return () => observer.disconnect();
   }, []);
 
+  useEffect(() => {
+    if (!preview) return;
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setPreview(null);
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [preview]);
+
   return (
     <div className="min-h-screen bg-latar text-teks">
       <nav className="sticky top-0 z-20 border-b border-borderHalus bg-latar">
@@ -138,9 +152,9 @@ export const Landing = () => {
           <button
             type="button"
             onClick={() => setMobileMenuOpen(true)}
-            className="btn-bounce flex h-9 w-9 items-center justify-center rounded-full bg-section text-teks transition hover:bg-panelHover md:hidden"
+            className="btn-bounce flex h-10 w-10 items-center justify-center rounded-[4px] bg-section text-white transition hover:bg-panelHover md:hidden"
           >
-            <MenuIcon size={20} />
+            <List size={22} weight="fill" />
           </button>
           <div className="hidden items-center gap-3 md:flex">
             <Link to="/masuk">
@@ -176,7 +190,7 @@ export const Landing = () => {
             onClick={() => setMobileMenuOpen(false)}
             className="flex h-8 w-8 items-center justify-center rounded-lg text-redup hover:bg-section transition"
           >
-            <X size={20} />
+            <X size={22} weight="fill" />
           </button>
         </div>
         <nav className="flex-1 overflow-y-auto px-3 space-y-0.5">
@@ -214,7 +228,7 @@ export const Landing = () => {
             <button
               type="button"
               onClick={() => setMobileMenuOpen(false)}
-              className="btn-bounce flex w-full items-center justify-center gap-2 rounded-full border border-borderHalus bg-latar px-4 py-2 text-sm font-semibold text-white transition hover:brightness-105 focus:outline-none focus:ring-2 focus:ring-utama/60"
+              className="btn-bounce flex w-full items-center justify-center gap-2 rounded-[4px] border border-borderHalus bg-latar px-4 py-3 text-sm font-semibold text-white transition hover:brightness-105 focus:outline-none focus:ring-2 focus:ring-utama/60"
             >
               Login Admin
             </button>
@@ -227,11 +241,15 @@ export const Landing = () => {
 
       <section
         id="fitur"
-        className="relative min-h-[68vh] overflow-hidden bg-cover bg-center md:min-h-[75vh]"
-        style={{ backgroundImage: "url('/img/bg-hero.webp')" }}
+        className="relative min-h-[68vh] overflow-hidden md:min-h-[75vh]"
       >
-        <div className="absolute inset-0 bg-gradient-to-b from-[#07090c]/80 via-[#0A0A0A]/72 via-58% to-[#0A0A0A]/90" />
-        <div className="absolute inset-x-0 bottom-0 h-[18rem] bg-gradient-to-b from-transparent via-[#07090c]/90 to-[#0A0A0A]" />
+        <div
+          className="hero-bg-motion absolute inset-0 bg-cover bg-center"
+          style={{ backgroundImage: "url('/img/bg-hero.webp')" }}
+        />
+        <div className="absolute inset-0 bg-[#111719]/54" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(17,23,25,0.24)_0%,rgba(17,23,25,0.54)_50%,rgba(17,23,25,0.88)_100%)]" />
+        <div className="absolute inset-x-0 bottom-0 h-[30rem] bg-gradient-to-b from-transparent via-[#111719]/72 to-[#111719]" />
         <ContainerPublik className="relative z-10 flex min-h-[68vh] items-center justify-center pb-5 pt-5 md:min-h-[75vh] md:pb-4 md:pt-6">
           <div className="w-full space-y-5 text-center md:space-y-6">
             <h1
@@ -263,21 +281,21 @@ export const Landing = () => {
               <h3 className="ringkasan-title text-center">
                 Mengapa Memilih Kami
               </h3>
-              <div className="mt-5 grid grid-cols-2 gap-px bg-[#2D2D2D] text-center text-sm md:grid-cols-4">
-                <div className="bg-panel flex flex-col items-center gap-2 p-4">
-                  <BadgeCheck size={20} className="text-utama" />
+              <div className="mt-5 grid grid-cols-2 text-center text-sm md:grid-cols-4">
+                <div className="motion-icon-group flex flex-col items-center gap-2 border-b border-r border-borderHalus p-5 md:border-b-0">
+                  <SealCheck size={22} weight="fill" className="motion-icon-only text-redup" />
                   <p className="text-lg font-semibold">Teknisi Terpercaya</p>
                 </div>
-                <div className="bg-panel flex flex-col items-center gap-2 p-4">
-                  <Wallet size={20} className="text-utama" />
+                <div className="motion-icon-group flex flex-col items-center gap-2 border-b border-borderHalus p-5 md:border-b-0 md:border-r">
+                  <Wallet size={22} weight="fill" className="motion-icon-only text-redup" />
                   <p className="text-lg font-semibold">Harga Terjangkau</p>
                 </div>
-                <div className="bg-panel flex flex-col items-center gap-2 p-4">
-                  <ShieldCheck size={20} className="text-utama" />
+                <div className="motion-icon-group flex flex-col items-center gap-2 border-r border-borderHalus p-5">
+                  <ShieldCheck size={22} weight="fill" className="motion-icon-only text-redup" />
                   <p className="text-lg font-semibold">Service Bergaransi</p>
                 </div>
-                <div className="bg-panel flex flex-col items-center gap-2 p-4">
-                  <Zap size={20} className="text-utama" />
+                <div className="motion-icon-group flex flex-col items-center gap-2 p-5">
+                  <Lightning size={22} weight="fill" className="motion-icon-only text-redup" />
                   <p className="text-lg font-semibold">Admin Responsif</p>
                 </div>
               </div>
@@ -290,80 +308,80 @@ export const Landing = () => {
         <ContainerPublik>
           <section className="space-y-6" id="jenis-servis" data-reveal>
             <h2 className="text-xl font-semibold">Layanan yang Tersedia</h2>
-            <div className="grid w-full grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-              <div className="kartu h-full overflow-hidden p-0">
+            <div className="grid w-full grid-cols-1 gap-4 sm:grid-cols-2 md:gap-5 lg:grid-cols-3">
+              <div className="motion-card kartu h-full overflow-hidden p-0" data-motion-card>
                 <img
                   src="/img/service-ac.png"
                   alt="Service AC"
-                  className="h-48 w-full object-cover"
+                  className="aspect-[4/3] w-full object-cover"
                 />
                 <div className="p-4">
                   <p className="flex items-center gap-2 font-semibold">
-                    <Snowflake size={20} className="text-utama" /> Service AC
+                    <Fan size={22} weight="fill" className="motion-icon text-redup" /> Service AC
                   </p>
                 </div>
               </div>
-              <div className="kartu h-full overflow-hidden p-0">
+              <div className="motion-card kartu h-full overflow-hidden p-0" data-motion-card>
                 <img
                   src="/img/service-kulkas.png"
                   alt="Service Kulkas"
-                  className="h-48 w-full object-cover"
+                  className="aspect-[4/3] w-full object-cover"
                 />
                 <div className="p-4">
                   <p className="flex items-center gap-2 font-semibold">
-                    <Refrigerator size={20} className="text-utama" /> Service
+                    <ThermometerCold size={22} weight="fill" className="motion-icon text-redup" /> Service
                     Kulkas
                   </p>
                 </div>
               </div>
-              <div className="kartu h-full overflow-hidden p-0">
+              <div className="motion-card kartu h-full overflow-hidden p-0" data-motion-card>
                 <img
                   src="/img/service-chiller.png"
                   alt="Service Chiller"
-                  className="h-48 w-full object-cover"
+                  className="aspect-[4/3] w-full object-cover"
                 />
                 <div className="p-4">
                   <p className="flex items-center gap-2 font-semibold">
-                    <Snowflake size={20} className="text-utama" /> Service
+                    <Snowflake size={22} weight="fill" className="motion-icon text-redup" /> Service
                     Chiller
                   </p>
                 </div>
               </div>
-              <div className="kartu h-full overflow-hidden p-0">
+              <div className="motion-card kartu h-full overflow-hidden p-0" data-motion-card>
                 <img
                   src="/img/service-showcase.png"
                   alt="Service Showcase"
-                  className="h-48 w-full object-cover"
+                  className="aspect-[4/3] w-full object-cover"
                 />
                 <div className="p-4">
                   <p className="flex items-center gap-2 font-semibold">
-                    <Refrigerator size={20} className="text-utama" /> Service
+                    <Storefront size={22} weight="fill" className="motion-icon text-redup" /> Service
                     Showcase
                   </p>
                 </div>
               </div>
-              <div className="kartu h-full overflow-hidden p-0">
+              <div className="motion-card kartu h-full overflow-hidden p-0" data-motion-card>
                 <img
                   src="/img/service-mesincuci.png"
                   alt="Service Mesin Cuci"
-                  className="h-48 w-full object-cover"
+                  className="aspect-[4/3] w-full object-cover"
                 />
                 <div className="p-4">
                   <p className="flex items-center gap-2 font-semibold">
-                    <WashingMachine size={20} className="text-utama" /> Service
+                    <WashingMachine size={22} weight="fill" className="motion-icon text-redup" /> Service
                     Mesin Cuci
                   </p>
                 </div>
               </div>
-              <div className="kartu h-full overflow-hidden p-0">
+              <div className="motion-card kartu h-full overflow-hidden p-0" data-motion-card>
                 <img
                   src="/img/service-tv.png"
                   alt="Service TV"
-                  className="h-48 w-full object-cover"
+                  className="aspect-[4/3] w-full object-cover"
                 />
                 <div className="p-4">
                   <p className="flex items-center gap-2 font-semibold">
-                    <Tv size={20} className="text-utama" /> Service TV
+                    <Television size={22} weight="fill" className="motion-icon text-redup" /> Service TV
                   </p>
                 </div>
               </div>
@@ -376,9 +394,13 @@ export const Landing = () => {
         <ContainerPublik>
           <section className="space-y-6" id="testimoni" data-reveal>
             <h2 className="text-xl font-semibold">Testimoni Pengguna</h2>
-            <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+            <div className="grid auto-rows-fr gap-4 md:grid-cols-2 md:gap-5 lg:grid-cols-3">
               {testimoni.map((item) => (
-                <div key={item.nama} className="kartu rounded-none p-4 md:p-6">
+                <div
+                  key={item.nama}
+                  className="motion-card kartu flex h-full min-h-[190px] flex-col justify-between rounded-none p-4 md:p-6"
+                  data-motion-card
+                >
                   <p className="text-sm text-teks2">"{item.isi}"</p>
                   <div className="mt-4 flex items-center gap-3">
                     <img
@@ -413,7 +435,7 @@ export const Landing = () => {
                 <Tombol
                   className={`btn-bounce bg-section text-white ${tombolLanding}`}
                 >
-                  Lihat Semua Testimoni
+                  Lihat Semua
                 </Tombol>
               </a>
             </div>
@@ -426,7 +448,7 @@ export const Landing = () => {
           <section className="space-y-6" id="tentang" data-reveal>
             <h2 className="text-xl font-semibold">Tentang Perusahaan</h2>
             <div className="grid gap-5 md:grid-cols-[1.2fr_0.8fr]">
-              <div className="kartu rounded-none p-4 md:p-6">
+              <div className="motion-card kartu rounded-none p-4 md:p-6" data-motion-card>
                 <p className="text-sm text-teks2">
                   Eko Service adalah usaha jasa service elektronik panggilan di
                   Jakarta yang sudah berpengalaman dalam menangani berbagai
@@ -440,13 +462,13 @@ export const Landing = () => {
                   serta melayani konsumen dari berbagai kalangan.
                 </p>
               </div>
-              <div className="kartu rounded-none p-4 text-sm space-y-1 md:p-6">
+              <div className="motion-card kartu rounded-none p-4 text-sm space-y-1 md:p-6" data-motion-card>
                 <div className="panel-kompak p-4 space-y-0.5">
                   <p className="text-teks2">Sudah Tanggani</p>
                   <p
                     className="text-lg font-semibold"
                     style={{
-                      fontFamily: "'Koulen', sans-serif",
+                      fontFamily: "'Squada One', sans-serif",
                       textTransform: 'uppercase',
                       letterSpacing: '0.01em'
                     }}
@@ -454,12 +476,12 @@ export const Landing = () => {
                     100+ Pelanggan
                   </p>
                 </div>
-                <div className="h-px w-full bg-[#2D2D2D]"></div>
+                <div className="h-px w-full bg-[#2A3639]"></div>
                 <div className="panel-kompak p-4 space-y-0.5">
                   <p className="text-teks2">Rating Google</p>
                   <p className="text-lg font-semibold">4.9 / 5.0</p>
                 </div>
-                <div className="h-px w-full bg-[#2D2D2D]"></div>
+                <div className="h-px w-full bg-[#2A3639]"></div>
                 <div className="panel-kompak p-4 space-y-0.5">
                   <p className="text-teks2">Cakupan Kota</p>
                   <p className="text-lg font-semibold">Jakarta dan Sekitar</p>
@@ -474,17 +496,18 @@ export const Landing = () => {
         <ContainerPublik>
           <section className="space-y-6" id="sertifikat" data-reveal>
             <h2 className="text-xl font-semibold">Sertifikat</h2>
-            <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+            <div className="grid gap-4 md:grid-cols-2 md:gap-5 lg:grid-cols-3">
               {gambarSertifikat.map((img) => (
                 <button
                   key={img.judul}
-                  className="galeri-item overflow-hidden kartu rounded-none bg-panel p-0 text-left"
+                  className="motion-card galeri-item h-full overflow-hidden kartu rounded-none bg-panel p-0 text-left"
+                  data-motion-card
                   onClick={() => setPreview({ src: img.src, judul: img.judul })}
                 >
                   <img
                     src={img.src}
                     alt={img.judul}
-                    className="h-48 w-full object-cover md:h-64"
+                    className="aspect-[4/3] w-full object-cover"
                   />
                   <span className="galeri-overlay">
                     <span className="galeri-cta">Lihat Gambar</span>
@@ -499,22 +522,23 @@ export const Landing = () => {
       <SectionWrapper>
         <ContainerPublik>
           <section className="space-y-6" id="lokasi" data-reveal>
-            <h2 className="text-xl font-semibold">Lokasi Kami</h2>
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <h2 className="text-xl font-semibold">Lokasi Kami</h2>
+              <a href={linkMaps} target="_blank" rel="noreferrer" className="w-full sm:w-auto">
+                <Tombol
+                  className="btn-bounce btn-map bg-section text-white"
+                >
+                  <MapPin size={22} weight="fill" />
+                  Buka Map
+                </Tombol>
+              </a>
+            </div>
             <div className="space-y-4">
               <PetaPreviewLokasi
                 lat={lokasiEkoService.lat}
                 lng={lokasiEkoService.lng}
                 withCard={false}
               />
-              <div className="flex justify-end">
-                <a href={linkMaps} target="_blank" rel="noreferrer" className="w-full sm:w-auto">
-                  <Tombol
-                    className={`btn-bounce bg-section text-white ${tombolLanding}`}
-                  >
-                    Buka di Google Maps
-                  </Tombol>
-                </a>
-              </div>
             </div>
           </section>
         </ContainerPublik>
@@ -523,12 +547,11 @@ export const Landing = () => {
       <SectionWrapper>
         <ContainerPublik>
           <section className="space-y-8 pb-6" data-reveal>
-            <div className="kartu rounded-none p-5 text-center md:p-7">
-              <h3 className="cta-title">Butuh Service Cepat dan Murah?</h3>
+            <div className="motion-card kartu rounded-none p-5 text-center md:p-7" data-motion-card>
+              <h3 className="cta-title">Butuh Service Murah?</h3>
               <p className="mt-3 text-sm text-teks2">
-                Solusi cepat dan hemat untuk service Anda. Hanya dengan harga
-                jasa mulai dari Rp 70 ribu hingga Rp 150 ribu, <br className="hidden md:block" />
-                teknisi kami siap melayani langsung ke lokasi Anda!
+                <span className="block">Solusi cepat dan hemat untuk service Anda. Hanya dengan harga jasa mulai dari</span>
+                <span className="block">Rp 70 ribu - Rp 150 ribu, teknisi kami siap melayani langsung ke lokasi Anda!</span>
               </p>
               <div className="mt-5 flex justify-center gap-3 flex-wrap">
                 <Link to="/booking" className="w-full sm:w-auto">
@@ -546,11 +569,12 @@ export const Landing = () => {
         <ContainerPublik>
           <section className="space-y-6" id="galeri-template" data-reveal>
             <h2 className="text-xl font-semibold">Galeri Pekerjaan</h2>
-            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="grid gap-4 sm:grid-cols-2 md:gap-5 lg:grid-cols-4">
               {gambarTemplate.map((img) => (
                 <button
                   key={img.judul}
-                  className="galeri-item overflow-hidden kartu rounded-none bg-panel p-0 text-left"
+                  className="motion-card galeri-item h-full overflow-hidden kartu rounded-none bg-panel p-0 text-left"
+                  data-motion-card
                   onClick={() => setPreview({ src: img.src, judul: img.judul })}
                 >
                   <img
@@ -574,7 +598,7 @@ export const Landing = () => {
                 <Tombol
                   className={`btn-bounce bg-section text-white ${tombolLanding}`}
                 >
-                  Lihat Semua Gambar
+                  Lihat Semua
                 </Tombol>
               </a>
             </div>
@@ -588,22 +612,25 @@ export const Landing = () => {
         <div
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4"
           onClick={() => setPreview(null)}
+          role="dialog"
+          aria-modal="true"
+          aria-label={preview.judul}
         >
           <div
-            className="relative w-full max-w-4xl"
-            onClick={(e) => e.stopPropagation()}
+            className="relative flex max-h-[86vh] w-full max-w-5xl flex-col items-center justify-center gap-3"
           >
-            <button
-              className="absolute right-2 top-2 rounded-md bg-panel p-2 text-white"
-              onClick={() => setPreview(null)}
-            >
-              <X size={20} />
-            </button>
             <img
               src={preview.src}
               alt={preview.judul}
-              className="max-h-[80vh] w-full rounded-md object-cover"
+              className="max-h-[86vh] max-w-full rounded-md object-contain"
+              onClick={(e) => e.stopPropagation()}
             />
+            <p
+              className="text-center text-sm text-white/80"
+              style={{ fontFamily: "'Farro', sans-serif", textTransform: 'none' }}
+            >
+              Klik area luar foto untuk keluar
+            </p>
           </div>
         </div>
       ) : null}

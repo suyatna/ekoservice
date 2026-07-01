@@ -24,17 +24,6 @@ async function main() {
     },
   });
 
-  await prisma.user.deleteMany({
-    where: {
-      email: {
-        in: [
-          'teknisi@ekoservice.com',
-          'finance@ekoservice.com',
-        ],
-      },
-    },
-  });
-
   // Admin user aktif
   const adminHash = await argon2.hash('Eko26!Aa', {
     type: argon2.argon2id,
@@ -44,7 +33,7 @@ async function main() {
   });
 
   await prisma.user.upsert({
-    where: { email: 'admin@ekoservice.com' },
+    where: { username: 'ekoserviceterbaik' },
     update: {
       username: 'ekoserviceterbaik',
     },
@@ -52,7 +41,6 @@ async function main() {
       id: '00000000-0000-0000-0000-000000000001',
       nama: 'Administrator',
       username: 'ekoserviceterbaik',
-      email: 'admin@ekoservice.com',
       password: adminHash,
       role: 'ADMIN',
       aktif: true,

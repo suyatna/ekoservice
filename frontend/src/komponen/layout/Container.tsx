@@ -2,7 +2,7 @@ import { ReactNode } from 'react';
 import { cn } from '@/utils/cn';
 
 export const ContainerPublik = ({ children, className }: { children: ReactNode; className?: string }) => (
-  <div className={cn('mx-auto w-full max-w-7xl px-4 sm:px-5 md:px-8 lg:px-10 xl:px-12', className)}>{children}</div>
+  <div className={cn('mx-auto w-full max-w-6xl px-4 sm:px-5 md:px-6 lg:px-8 xl:px-8', className)}>{children}</div>
 );
 
 export const ContainerDashboard = ({ children, className }: { children: ReactNode; className?: string }) => (

@@ -2,7 +2,6 @@ import argon2 from 'argon2';
 import { prisma } from '../../shared/prisma.js';
 import {
   InvalidCredentialsError,
-  EmailAlreadyExistsError,
   NotFoundError,
   TokenExpiredError,
 } from '../../shared/errors.js';
@@ -10,7 +9,7 @@ import {
   generateUUID,
   generateRefreshToken,
 } from '../../shared/id-generator.js';
-import { SkemaDaftar, SchemaLoginResponse } from './auth.schemas.js';
+import { SchemaLoginResponse } from './auth.schemas.js';
 
 // ──────────────────────────────────────────────────────────
 // Auth Service
@@ -52,43 +51,6 @@ async function hashToken(token: string): Promise<string> {
   return createHash('sha256').update(token).digest('hex');
 }
 
-// ── User Registration ────────────────────────────────────
-
-export async function daftar(data: SkemaDaftar): Promise<Omit<SchemaLoginResponse, 'accessToken'>> {
-  const existing = await prisma.user.findUnique({
-    where: { email: data.email },
-  });
-
-  if (existing) {
-    throw new EmailAlreadyExistsError();
-  }
-
-  const hashedPassword = await hashPassword(data.password);
-
-  const user = await prisma.user.create({
-    data: {
-      id: generateUUID(),
-      nama: data.nama,
-      username: data.email.split('@')[0]?.toLowerCase() ?? null,
-      email: data.email,
-      password: hashedPassword,
-      role: 'ADMIN',
-      aktif: true,
-    },
-  });
-
-  return {
-    user: {
-      id: user.id,
-      nama: user.nama,
-      username: user.username,
-      email: user.email,
-      role: user.role,
-      aktif: user.aktif,
-    },
-  };
-}
-
 // ── User Login ────────────────────────────────────────────
 
 export async function masuk(
@@ -113,7 +75,6 @@ export async function masuk(
       id: user.id,
       nama: user.nama,
       username: user.username,
-      email: user.email,
       role: user.role,
       aktif: user.aktif,
     },
@@ -129,7 +90,6 @@ export async function getUserById(id: string) {
       id: true,
       nama: true,
       username: true,
-      email: true,
       role: true,
       aktif: true,
     },

@@ -8,7 +8,6 @@ export interface User {
   id: string;
   nama: string;
   username?: string | null;
-  email: string;
   role: Role;
   aktif: boolean;
 }
@@ -26,17 +25,6 @@ export const authLayanan = {
     // Simpan token
     tokenStorage.setToken(accessToken);
 
-    return { accessToken, user };
-  },
-
-  async register(data: {
-    nama: string;
-    email: string;
-    password: string;
-  }): Promise<LoginResponse> {
-    const res = await api.post<{ data: LoginResponse }>('/auth/register', data);
-    const { accessToken, user } = res.data.data;
-    tokenStorage.setToken(accessToken);
     return { accessToken, user };
   },
 

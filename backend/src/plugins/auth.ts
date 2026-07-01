@@ -5,7 +5,7 @@ import { config } from '../config/index.js';
 // ──────────────────────────────────────────────────────────
 // JWT Plugin
 // ──────────────────────────────────────────────────────────
-// Access Token: ES512 algorithm, 15 menit, payload: sub, role, email
+// Access Token: ES512 algorithm, 15 menit, payload: sub dan role
 // Refresh Token: di-handle manual via httpOnly cookie + DB
 // ──────────────────────────────────────────────────────────
 
@@ -19,7 +19,6 @@ declare module '@fastify/jwt' {
 export interface JwtPayload {
   sub: string; // userId
   role: string;
-  email: string;
   iat?: number;
   exp?: number;
 }

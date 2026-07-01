@@ -1,7 +1,7 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, User, Lock, Eye, EyeOff } from 'lucide-react';
+import { ArrowLeft, Eye, EyeSlash, Lock, User } from '@phosphor-icons/react';
 import { useState } from 'react';
 import { skemaMasuk } from '@/skema/auth';
 import { z } from 'zod';
@@ -40,7 +40,7 @@ export const Masuk = () => {
             onClick={() => nav('/')}
             className="inline-flex items-center gap-2 text-sm text-redup hover:text-teks"
           >
-            <ArrowLeft size={18} />
+            <ArrowLeft size={22} weight="fill" />
             Kembali
           </button>
         </div>
@@ -55,7 +55,8 @@ export const Masuk = () => {
                 <div>
                   <div className="relative">
                     <User
-                      size={18}
+                      size={22}
+                      weight="fill"
                       className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-redup"
                     />
                     <FormInput
@@ -70,7 +71,8 @@ export const Masuk = () => {
                 <div>
                   <div className="relative">
                     <Lock
-                      size={18}
+                      size={22}
+                      weight="fill"
                       className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-redup"
                     />
                     <FormInput
@@ -88,7 +90,7 @@ export const Masuk = () => {
                         lihatPassword ? 'Sembunyikan password' : 'Lihat password'
                       }
                     >
-                      {lihatPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                      {lihatPassword ? <EyeSlash size={22} weight="fill" /> : <Eye size={22} weight="fill" />}
                     </button>
                   </div>
                 </div>

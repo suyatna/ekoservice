@@ -8,7 +8,8 @@ export class SparepartController {
         const parsed = skemaSparepartBuat.safeParse(request.body);
         if (!parsed.success)
             throw new ValidationError(fromZodError(parsed.error).message);
-        const result = await buatSparepart(parsed.data);
+        const userId = request.user?.sub;
+        const result = await buatSparepart(parsed.data, userId);
         return reply.code(201).send(ok(result, request.requestId));
     }
     async daftar(request, reply) {

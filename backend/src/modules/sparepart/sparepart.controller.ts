@@ -11,7 +11,8 @@ export class SparepartController {
   async buat(request: FastifyRequest, reply: FastifyReply) {
     const parsed = skemaSparepartBuat.safeParse(request.body);
     if (!parsed.success) throw new ValidationError(fromZodError(parsed.error as any).message);
-    const result = await buatSparepart(parsed.data);
+    const userId = (request.user as { sub: string } | undefined)?.sub;
+    const result = await buatSparepart(parsed.data, userId);
     return reply.code(201).send(ok(result, request.requestId));
   }
 

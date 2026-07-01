@@ -6,6 +6,19 @@ import { tokenStorage } from '@/utils/token';
 
 export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? '/api';
 
+export const pesanErrorApi = (error: unknown, fallback = 'Terjadi kesalahan') => {
+  const err = error as any;
+  const status = err?.response?.status;
+  const message = err?.response?.data?.message;
+
+  if (status === 401) return 'Sesi habis, silakan login ulang';
+  if (status === 403) return 'Kamu tidak punya akses ke resource ini';
+  if (status === 400 || status === 422) return message ?? 'Data belum valid';
+  if (status === 500) return 'Server sedang bermasalah';
+  if (!err?.response) return 'Tidak bisa terhubung ke server';
+  return message ?? fallback;
+};
+
 export const api: AxiosInstance = axios.create({
   baseURL: API_BASE_URL,
   timeout: 10000,
@@ -13,7 +26,7 @@ export const api: AxiosInstance = axios.create({
 
 api.interceptors.request.use((config) => {
   // Skip Authorization for public auth endpoints (no token needed, stale token causes 401)
-  const isPublicAuth = ['/auth/login', '/auth/register', '/auth/refresh'].some(
+  const isPublicAuth = ['/auth/login', '/auth/refresh'].some(
     (p) => config.url?.startsWith(p)
   );
 

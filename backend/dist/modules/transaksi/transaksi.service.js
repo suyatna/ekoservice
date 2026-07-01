@@ -2,7 +2,7 @@ import { prisma } from '../../shared/prisma.js';
 import { generateTransaksiId, generateUUID } from '../../shared/id-generator.js';
 import { NotFoundError } from '../../shared/errors.js';
 import { Decimal } from '@prisma/client/runtime/library';
-export async function buatTransaksi(data) {
+export async function buatTransaksi(data, userId) {
     return prisma.transaksi.create({
         data: {
             id: generateUUID(),
@@ -10,6 +10,7 @@ export async function buatTransaksi(data) {
             deskripsi: data.deskripsi,
             jenis: data.jenis,
             nominal: new Decimal(data.nominal),
+            ...(userId ? { dibuatOlehId: userId } : {}),
             ...(data.dibuatDi !== undefined ? { dibuatDi: new Date(data.dibuatDi) } : {}),
         },
     });

@@ -1,5 +1,5 @@
 import { createSigner } from 'fast-jwt';
-import { masuk, daftar, getUserById, createRefreshToken, validateRefreshToken, rotateRefreshToken, revokeRefreshToken, } from './auth.service.js';
+import { masuk, getUserById, createRefreshToken, validateRefreshToken, rotateRefreshToken, revokeRefreshToken, } from './auth.service.js';
 import { ok, fail } from '../../shared/response.js';
 import { ValidationError } from '../../shared/errors.js';
 import { config } from '../../config/index.js';
@@ -23,7 +23,6 @@ export class AuthController {
         const payload = {
             sub: result.user.id,
             role: result.user.role,
-            email: result.user.email,
         };
         const accessToken = signAccessToken(payload);
         const refreshToken = await createRefreshToken(result.user.id);
@@ -38,36 +37,6 @@ export class AuthController {
             .code(200);
         return reply.send(ok({ accessToken, user: result.user }, request.requestId));
     }
-    async register(request, reply) {
-        const body = request.body;
-        if (!body || typeof body !== 'object') {
-            throw new ValidationError('Body request tidak valid');
-        }
-        const nama = body['nama'];
-        const email = body['email'];
-        const password = body['password'];
-        if (!nama || !email || !password) {
-            throw new ValidationError('Nama, email, dan password wajib diisi');
-        }
-        const result = await daftar({ nama, email, password });
-        const payload = {
-            sub: result.user.id,
-            role: result.user.role,
-            email: result.user.email,
-        };
-        const accessToken = signAccessToken(payload);
-        const refreshToken = await createRefreshToken(result.user.id);
-        reply
-            .setCookie('refreshToken', refreshToken, {
-            path: '/',
-            httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: 'strict',
-            maxAge: 7 * 24 * 60 * 60,
-        })
-            .code(201);
-        return reply.send(ok({ accessToken, user: result.user }, request.requestId));
-    }
     async refresh(request, reply) {
         const refreshToken = request.cookies['refreshToken'];
         if (!refreshToken) {
@@ -79,7 +48,6 @@ export class AuthController {
         const payload = {
             sub: user.id,
             role: user.role,
-            email: user.email,
         };
         const accessToken = signAccessToken(payload);
         reply

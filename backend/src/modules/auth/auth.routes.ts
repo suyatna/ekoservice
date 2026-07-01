@@ -4,7 +4,7 @@ import { authController } from './auth.controller.js';
 // ──────────────────────────────────────────────────────────
 // Auth Routes
 // ──────────────────────────────────────────────────────────
-// Public routes: login, register, refresh, logout
+// Public routes: login, refresh, logout
 // Protected routes: me
 // ──────────────────────────────────────────────────────────
 
@@ -30,10 +30,10 @@ function checkAuthRateLimit(request: any): boolean {
 }
 
 export async function authRoutes(fastify: FastifyInstance) {
-  // ── Auth rate limit preHandler (5 req/min for login/register) ──
+  // ── Auth rate limit preHandler (5 req/min for login) ──
   fastify.addHook('onRequest', async (request: any, reply: any) => {
     const url = request.url ?? '';
-    if (!url.startsWith('/auth/login') && !url.startsWith('/auth/register')) return;
+    if (!url.startsWith('/auth/login')) return;
     if (checkAuthRateLimit(request)) {
       reply.code(429).send({
         message: 'Terlalu banyak percobaan login. Tunggu 1 menit sebelum mencoba lagi.',
@@ -59,23 +59,6 @@ export async function authRoutes(fastify: FastifyInstance) {
     },
   }, async (request, reply) => {
     return authController.login(request, reply);
-  });
-
-  // POST /auth/register
-  fastify.post('/register', {
-    schema: {
-      body: {
-        type: 'object',
-        properties: {
-          nama: { type: 'string' },
-          email: { type: 'string' },
-          password: { type: 'string' },
-        },
-        required: ['nama', 'email', 'password'],
-      },
-    },
-  }, async (request, reply) => {
-    return authController.register(request, reply);
   });
 
   // POST /auth/refresh

@@ -1,4 +1,4 @@
-import { ArrowLeft, Phone } from 'lucide-react';
+import { ArrowLeft, Phone } from '@phosphor-icons/react';
 import { useNavigate } from 'react-router-dom';
 import { ContainerPublik } from '@/komponen/layout/Container';
 import { Tombol } from '@/komponen/ui/tombol';
@@ -15,7 +15,7 @@ const BookingPublik = () => {
       <ContainerPublik className="flex min-h-screen flex-col">
         <div className="pt-5 md:pt-8">
           <button type="button" onClick={() => nav('/')} className="inline-flex items-center gap-2 text-sm text-redup hover:text-teks">
-            <ArrowLeft size={18} />
+            <ArrowLeft size={22} weight="fill" />
             Kembali
           </button>
         </div>
@@ -31,7 +31,7 @@ const BookingPublik = () => {
 
               <div className="panel-kompak p-4">
                 <div className="flex flex-col items-center justify-center gap-2 sm:flex-row">
-                  <Phone size={16} className="text-utama" />
+                  <Phone size={22} weight="fill" className="text-redup" />
                   <span className="nomor-wa">Nomor Admin: 0857-7221-9292</span>
                 </div>
               </div>

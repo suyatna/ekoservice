@@ -5,7 +5,6 @@
 
 generator client {
   provider = "prisma-client-js"
-  output   = "../../node_modules/.prisma/client"
 }
 
 datasource db {
@@ -55,21 +54,21 @@ enum KategoriSparepart {
 // ──────────────────────────────────────────────────────────
 
 model User {
-  id        String   @id @default(uuid())
-  nama      String
-  username  String?  @unique
-  email     String   @unique
-  password  String   // hashed with argon2
-  role      Role     @default(ADMIN)
-  aktif     Boolean  @default(true)
-  dibuatDi  DateTime @default(now())
+  id         String   @id @default(uuid())
+  nama       String
+  username   String?  @unique
+  password   String // hashed with argon2
+  role       Role     @default(ADMIN)
+  aktif      Boolean  @default(true)
+  dibuatDi   DateTime @default(now())
   diupdateDi DateTime @updatedAt
 
   // Relations
-  bookingsDibuat      Booking[]         @relation("BookingDibuatOleh")
-  refreshTokens       RefreshToken[]
+  bookingsDibuat   Booking[]      @relation("BookingDibuatOleh")
+  transaksisDibuat Transaksi[]    @relation("TransaksiDibuatOleh")
+  sparepartsDibuat Sparepart[]    @relation("SparepartDibuatOleh")
+  refreshTokens    RefreshToken[]
 
-  @@index([email])
   @@index([username])
   @@index([role])
   @@index([aktif])
@@ -81,8 +80,8 @@ model User {
 // ──────────────────────────────────────────────────────────
 
 model Booking {
-  id              String        @id @default(uuid())
-  idTampilan      String        @unique // BK-XXXXXX format
+  id         String @id @default(uuid())
+  idTampilan String @unique // BK-XXXXXX format
 
   // Customer info
   namaPelanggan   String
@@ -90,18 +89,18 @@ model Booking {
   kategori        KategoriLayanan
 
   // Service info
-  tglBooking      DateTime
+  tglBooking DateTime
 
   // Status
-  status          StatusBooking @default(MENUNGGU)
-  dibuatOlehId    String
+  status       StatusBooking @default(MENUNGGU)
+  dibuatOlehId String
 
   // Timestamps
-  dibuatDi        DateTime      @default(now())
-  diupdateDi      DateTime      @updatedAt
+  dibuatDi   DateTime @default(now())
+  diupdateDi DateTime @updatedAt
 
   // Relations
-  dibuatOleh      User          @relation("BookingDibuatOleh", fields: [dibuatOlehId], references: [id])
+  dibuatOleh User @relation("BookingDibuatOleh", fields: [dibuatOlehId], references: [id])
 
   @@index([idTampilan])
   @@index([status])
@@ -117,19 +116,24 @@ model Booking {
 // ──────────────────────────────────────────────────────────
 
 model Transaksi {
-  id          String         @id @default(uuid())
-  idTampilan  String         @unique // TX-XXXXXX format
+  id         String @id @default(uuid())
+  idTampilan String @unique // TX-XXXXXX format
 
-  deskripsi   String
-  jenis       JenisTransaksi
-  nominal     Decimal        @db.Decimal(12, 0)
+  deskripsi    String
+  jenis        JenisTransaksi
+  nominal      Decimal        @db.Decimal(12, 0)
+  dibuatOlehId String?
 
   // Timestamps
-  dibuatDi    DateTime       @default(now())
-  diupdateDi  DateTime       @updatedAt
+  dibuatDi   DateTime @default(now())
+  diupdateDi DateTime @updatedAt
+
+  // Relations
+  dibuatOleh User? @relation("TransaksiDibuatOleh", fields: [dibuatOlehId], references: [id])
 
   @@index([idTampilan])
   @@index([jenis])
+  @@index([dibuatOlehId])
   @@index([dibuatDi])
   @@map("transaksis")
 }
@@ -139,20 +143,25 @@ model Transaksi {
 // ──────────────────────────────────────────────────────────
 
 model Sparepart {
-  id          String          @id @default(uuid())
-  idTampilan  String          @unique // SP-XXXXXX format
+  id         String @id @default(uuid())
+  idTampilan String @unique // SP-XXXXXX format
 
-  nama        String
-  kategori    KategoriSparepart
-  stok        Int             @default(0)
-  satuan      String          @default("pcs")
+  nama         String
+  kategori     KategoriSparepart
+  stok         Int               @default(0)
+  satuan       String            @default("pcs")
+  dibuatOlehId String?
 
   // Timestamps
-  dibuatDi    DateTime        @default(now())
-  diupdateDi  DateTime        @updatedAt
+  dibuatDi   DateTime @default(now())
+  diupdateDi DateTime @updatedAt
+
+  // Relations
+  dibuatOleh User? @relation("SparepartDibuatOleh", fields: [dibuatOlehId], references: [id])
 
   @@index([idTampilan])
   @@index([kategori])
+  @@index([dibuatOlehId])
   @@index([stok])
   @@map("spareparts")
 }
@@ -162,16 +171,16 @@ model Sparepart {
 // ──────────────────────────────────────────────────────────
 
 model RefreshToken {
-  id        String   @id @default(uuid())
-  tokenHash String   @unique // hashed version of the token
-  family    String   // for rotation detection
-  userId    String
-  expiresDi DateTime
-  dibuatDi  DateTime @default(now())
+  id         String   @id @default(uuid())
+  tokenHash  String   @unique // hashed version of the token
+  family     String // for rotation detection
+  userId     String
+  expiresDi  DateTime
+  dibuatDi   DateTime @default(now())
   diupdateDi DateTime @updatedAt
-  diRevoke  Boolean  @default(false)
+  diRevoke   Boolean  @default(false)
 
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([tokenHash])
   @@index([userId])

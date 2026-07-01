@@ -54,7 +54,7 @@ export async function buildApp() {
     });
     // Global preHandler: JWT authentication
     fastify.addHook('preHandler', async (request, reply) => {
-        const skip = ['/health', '/auth/login', '/auth/register', '/auth/refresh', '/auth/logout'];
+        const skip = ['/health', '/auth/login', '/auth/refresh', '/auth/logout'];
         if (skip.some((p) => request.url.startsWith(p)))
             return;
         try {

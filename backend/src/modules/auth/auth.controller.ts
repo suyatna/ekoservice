@@ -2,7 +2,6 @@ import { FastifyRequest, FastifyReply } from 'fastify';
 import { createSigner } from 'fast-jwt';
 import {
   masuk,
-  daftar,
   getUserById,
   createRefreshToken,
   validateRefreshToken,
@@ -40,7 +39,6 @@ export class AuthController {
     const payload: JwtPayload = {
       sub: result.user.id,
       role: result.user.role,
-      email: result.user.email,
     };
     const accessToken = signAccessToken(payload) as string;
     const refreshToken = await createRefreshToken(result.user.id);
@@ -54,44 +52,6 @@ export class AuthController {
         maxAge: 7 * 24 * 60 * 60,
       })
       .code(200);
-
-    return reply.send(ok({ accessToken, user: result.user }, request.requestId));
-  }
-
-  async register(request: FastifyRequest, reply: FastifyReply) {
-    const body = request.body as Record<string, unknown>;
-
-    if (!body || typeof body !== 'object') {
-      throw new ValidationError('Body request tidak valid');
-    }
-
-    const nama = body['nama'] as string | undefined;
-    const email = body['email'] as string | undefined;
-    const password = body['password'] as string | undefined;
-
-    if (!nama || !email || !password) {
-      throw new ValidationError('Nama, email, dan password wajib diisi');
-    }
-
-    const result = await daftar({ nama, email, password });
-
-    const payload: JwtPayload = {
-      sub: result.user.id,
-      role: result.user.role,
-      email: result.user.email,
-    };
-    const accessToken = signAccessToken(payload) as string;
-    const refreshToken = await createRefreshToken(result.user.id);
-
-    reply
-      .setCookie('refreshToken', refreshToken, {
-        path: '/',
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'strict',
-        maxAge: 7 * 24 * 60 * 60,
-      })
-      .code(201);
 
     return reply.send(ok({ accessToken, user: result.user }, request.requestId));
   }
@@ -113,7 +73,6 @@ export class AuthController {
     const payload: JwtPayload = {
       sub: user.id,
       role: user.role,
-      email: user.email,
     };
     const accessToken = signAccessToken(payload) as string;
 

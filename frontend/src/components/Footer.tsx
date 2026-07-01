@@ -1,12 +1,12 @@
 import { useState } from 'react';
-import { Facebook, Instagram, Twitter, Youtube } from 'lucide-react';
+import { FacebookLogo, InstagramLogo, TwitterLogo, YoutubeLogo } from '@phosphor-icons/react';
 
 const Footer = () => {
   const [logoError, setLogoError] = useState(false);
   const logoSrc = '/logo-ekoservice.png';
 
   return (
-    <footer className="bg-[#161616] text-white">
+    <footer className="bg-[#1D2527] text-white">
       {/* Main Content */}
       <div className="mx-auto w-full max-w-7xl px-4 py-7 sm:px-5 md:px-8 md:py-8 lg:px-10 xl:px-12">
         {/* Row: Logo, Menu, Social */}
@@ -32,22 +32,22 @@ const Footer = () => {
           {/* Social Icons */}
           <div className="flex items-center justify-center gap-5">
             <a href="#" className="text-redup hover:text-teks transition-colors duration-200">
-              <Facebook size={20} />
+              <FacebookLogo size={22} weight="fill" />
             </a>
             <a href="#" className="text-redup hover:text-teks transition-colors duration-200">
-              <Instagram size={20} />
+              <InstagramLogo size={22} weight="fill" />
             </a>
             <a href="#" className="text-redup hover:text-teks transition-colors duration-200">
-              <Twitter size={20} />
+              <TwitterLogo size={22} weight="fill" />
             </a>
             <a href="#" className="text-redup hover:text-teks transition-colors duration-200">
-              <Youtube size={20} />
+              <YoutubeLogo size={22} weight="fill" />
             </a>
           </div>
         </div>
 
         {/* Divider */}
-        <div className="mt-6 border-t border-[#2D2D2D]"></div>
+        <div className="mt-6 border-t border-[#2A3639]"></div>
       </div>
     </footer>
   );

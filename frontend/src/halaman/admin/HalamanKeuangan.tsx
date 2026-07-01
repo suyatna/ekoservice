@@ -4,8 +4,8 @@ import { LayoutDashboard } from '@/komponen/layout/LayoutDashboard';
 import { FormSelect } from '@/komponen/form/FormSelect';
 import { FormInput } from '@/komponen/form/FormInput';
 import { Tombol } from '@/komponen/ui/tombol';
-import { Search, Loader2, Plus } from 'lucide-react';
-import { API_BASE_URL } from '@/layanan/api';
+import { CircleNotch, MagnifyingGlass, Plus, X } from '@phosphor-icons/react';
+import { API_BASE_URL, pesanErrorApi } from '@/layanan/api';
 import { transaksiLayanan } from '@/layanan/transaksi';
 import { tokenStorage } from '@/utils/token';
 import { toast } from 'sonner';
@@ -53,7 +53,7 @@ export default function HalamanKeuangan() {
   const dateRange = useMemo(() => getDateRange(exportRange), [exportRange]);
   const { dari, sampai } = dateRange;
 
-  const { data, isLoading, isError } = useQuery({
+  const { data, isLoading, isError, error } = useQuery({
     queryKey: ['transaksi', { search, filterJenis, dari, sampai }],
     queryFn: () =>
       transaksiLayanan.daftar({ page: 1, limit: 100, search, jenis: filterJenis as any, dari: dari || undefined, sampai: sampai || undefined }),
@@ -69,7 +69,7 @@ export default function HalamanKeuangan() {
       setBarisBaru(null);
       toast.success('Transaksi dibuat');
     },
-    onError: () => toast.error('Gagal buat transaksi'),
+    onError: (err) => toast.error(pesanErrorApi(err, 'Gagal buat transaksi')),
   });
 
   const hapusMutation = useMutation({
@@ -78,7 +78,7 @@ export default function HalamanKeuangan() {
       qc.invalidateQueries({ queryKey: ['transaksi'] });
       toast.success('Transaksi dihapus');
     },
-    onError: () => toast.error('Gagal hapus transaksi'),
+    onError: (err) => toast.error(pesanErrorApi(err, 'Gagal hapus transaksi')),
   });
 
   const ubahMutation = useMutation({
@@ -87,7 +87,7 @@ export default function HalamanKeuangan() {
       qc.invalidateQueries({ queryKey: ['transaksi'] });
       toast.success('Transaksi diupdate');
     },
-    onError: () => toast.error('Gagal update transaksi'),
+    onError: (err) => toast.error(pesanErrorApi(err, 'Gagal update transaksi')),
   });
 
   const transaksi = data?.data ?? [];
@@ -135,17 +135,17 @@ export default function HalamanKeuangan() {
             Export PDF
           </Tombol>
           <button
-            onClick={() => setBarisBaru(kosongTransaksi())}
-            className="btn-bounce flex h-9 w-9 items-center justify-center rounded-full bg-utama text-black transition hover:brightness-105"
+            onClick={() => setBarisBaru((prev) => (prev ? null : kosongTransaksi()))}
+            className="btn-bounce btn-icon-round flex h-10 w-10 items-center justify-center rounded-full bg-utama text-white transition hover:brightness-105"
           >
-            <Plus size={20} />
+            {barisBaru ? <X size={22} weight="fill" /> : <Plus size={22} weight="fill" />}
           </button>
         </div>
       }
       searchSlot={
         <div className="flex flex-1 flex-col gap-2 sm:flex-row sm:items-center sm:gap-3">
           <div className="relative w-full sm:flex-1">
-            <Search size={18} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-redup" />
+            <MagnifyingGlass size={22} weight="fill" className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-redup" />
             <input
               type="text"
               className="w-full bg-transparent pl-9 pr-3 py-2 text-sm text-teks placeholder:text-redup rounded-lg border border-borderHalus focus:outline-none focus:border-utama/60"
@@ -168,15 +168,15 @@ export default function HalamanKeuangan() {
         </div>
       }
     >
-      <div className="kartu overflow-x-auto">
+      <div className="kartu w-full overflow-x-auto overscroll-x-contain pb-2">
         {isLoading ? (
           <div className="flex flex-col items-center justify-center py-16 gap-3">
-            <Loader2 size={28} className="text-redup animate-spin" />
-            <p className="text-sm text-redup">Memuat data transaksi...</p>
+            <CircleNotch size={22} weight="fill" className="text-redup animate-spin" />
+            <p className="text-sm text-redup">Memuat data...</p>
           </div>
         ) : isError ? (
           <div className="flex flex-col items-center justify-center py-16">
-            <p className="text-sm text-bahaya">Gagal memuat data transaksi</p>
+            <p className="text-sm text-bahaya">{pesanErrorApi(error, 'Gagal memuat data')}</p>
           </div>
         ) : (
           <table className="min-w-[720px] text-sm table-fixed md:w-full">
@@ -187,23 +187,35 @@ export default function HalamanKeuangan() {
               <col className="w-1/4" />
             </colgroup>
             <thead>
-              <tr className="border-b border-[#2D2D2D]">
-                <th className="px-4 py-3 text-center text-xs font-semibold uppercase bg-utama text-black">Jenis Transaksi</th>
-                <th className="px-4 py-3 text-center text-xs font-semibold uppercase bg-utama text-black">Detail</th>
-                <th className="px-4 py-3 text-center text-xs font-semibold uppercase bg-utama text-black">Nominal (Rp)</th>
-                <th className="px-4 py-3 text-center text-xs font-semibold uppercase bg-utama text-black">Tanggal Transaksi</th>
+              <tr className="border-b border-[#2A3639]">
+                <th className="px-4 py-3 text-center text-xs font-semibold uppercase bg-utama text-white">Tanggal Transaksi</th>
+                <th className="px-4 py-3 text-center text-xs font-semibold uppercase bg-utama text-white">Jenis Transaksi</th>
+                <th className="px-4 py-3 text-center text-xs font-semibold uppercase bg-utama text-white">Detail</th>
+                <th className="px-4 py-3 text-center text-xs font-semibold uppercase bg-utama text-white">Nominal (Rp)</th>
               </tr>
             </thead>
             <tbody>
               {barisBaru && (
-                <tr className="border-b border-[#2D2D2D] bg-utama/5">
+                <tr className="border-b border-[#2A3639] bg-utama/5">
+                  <td className="px-3 py-2">
+                    <FormInput
+                      type="date"
+                      value={barisBaru.tgl || new Date().toISOString().split('T')[0]}
+                      error={barisBaru.touched && barisBaru.tgl === '' ? 'Tanggal wajib diisi' : undefined}
+                      onChange={(e) => setBarisBaru({ ...barisBaru, tgl: e.target.value, touched: true })}
+                      onBlur={(e) => {
+                        const next = { ...barisBaru, tgl: e.target.value, touched: true };
+                        setBarisBaru(next);
+                        cobaBuatTransaksi(next);
+                      }}
+                    />
+                  </td>
                   <td className="px-3 py-2">
                     <FormSelect
                       value={barisBaru.jenis}
                       onChange={(e) => {
                         const next = { ...barisBaru, jenis: e.target.value as any, touched: true };
                         setBarisBaru(next);
-                        cobaBuatTransaksi(next);
                       }}
                     >
                       <option value="MASUK">Masuk</option>
@@ -213,6 +225,7 @@ export default function HalamanKeuangan() {
                   <td className="px-3 py-2">
                     <FormInput
                       value={barisBaru.deskripsi}
+                      error={barisBaru.touched && barisBaru.deskripsi.trim() === '' ? 'Detail wajib diisi' : undefined}
                       onChange={(e) => setBarisBaru({ ...barisBaru, deskripsi: e.target.value, touched: true })}
                       onBlur={(e) => {
                         const next = { ...barisBaru, deskripsi: e.target.value, touched: true };
@@ -226,6 +239,12 @@ export default function HalamanKeuangan() {
                     <FormInput
                       type="number"
                       value={barisBaru.nominal}
+                      error={
+                        barisBaru.touched &&
+                        (barisBaru.nominal.trim() === '' || !Number.isFinite(Number(barisBaru.nominal)) || Number(barisBaru.nominal) <= 0)
+                          ? 'Nominal wajib lebih dari 0'
+                          : undefined
+                      }
                       onChange={(e) => setBarisBaru({ ...barisBaru, nominal: e.target.value, touched: true })}
                       onBlur={(e) => {
                         const next = { ...barisBaru, nominal: e.target.value, touched: true };
@@ -235,17 +254,14 @@ export default function HalamanKeuangan() {
                       placeholder="Silahkan isi..."
                     />
                   </td>
-                  <td className="px-3 py-2">
-                    <FormInput
-                      type="date"
-                      value={barisBaru.tgl || new Date().toISOString().split('T')[0]}
-                      onChange={(e) => setBarisBaru({ ...barisBaru, tgl: e.target.value, touched: true })}
-                      onBlur={(e) => {
-                        const next = { ...barisBaru, tgl: e.target.value, touched: true };
-                        setBarisBaru(next);
-                        cobaBuatTransaksi(next);
-                      }}
-                    />
+                </tr>
+              )}
+              {transaksi.length === 0 && !barisBaru && (
+                <tr>
+                  <td colSpan={4} className="px-4 py-12 text-center">
+                    <p className="text-sm text-teks2" style={{ fontFamily: "'Farro', sans-serif", textTransform: 'none' }}>
+                      Data tidak tersedia
+                    </p>
                   </td>
                 </tr>
               )}
@@ -277,6 +293,14 @@ function TransaksiRow({ transaksi, ubahMutation, hapusMutation }: { transaksi: a
       hapusMutation.mutate(transaksi.id);
       return;
     }
+    if (!Number.isFinite(Number(nextNominal)) || Number(nextNominal) <= 0) {
+      toast.error('Nominal harus lebih dari 0');
+      return;
+    }
+    if (Number.isNaN(new Date(nextTgl).getTime())) {
+      toast.error('Tanggal transaksi tidak valid');
+      return;
+    }
 
     // Bangun object hanya dengan field yang terisi
     const data: Record<string, unknown> = {};
@@ -289,7 +313,15 @@ function TransaksiRow({ transaksi, ubahMutation, hapusMutation }: { transaksi: a
   };
 
   return (
-    <tr className="border-b border-[#2D2D2D] hover:bg-[#161616] transition-colors">
+    <tr className="border-b border-[#2A3639] hover:bg-panelHover transition-colors">
+      <td className="px-3 py-2">
+        <FormInput
+          type="date"
+          value={tgl}
+          onChange={(e) => setTgl(e.target.value)}
+          onBlur={(e) => simpan({ tgl: e.target.value })}
+        />
+      </td>
       <td className="px-3 py-2">
         <FormSelect value={jenis} onChange={(e) => { const next = e.target.value; setJenis(next); simpan({ jenis: next }); }}>
           <option value="MASUK">Masuk</option>
@@ -305,14 +337,6 @@ function TransaksiRow({ transaksi, ubahMutation, hapusMutation }: { transaksi: a
           value={nominal}
           onChange={(e) => setNominal(e.target.value)}
           onBlur={(e) => simpan({ nominal: e.target.value })}
-        />
-      </td>
-      <td className="px-3 py-2">
-        <FormInput
-          type="date"
-          value={tgl}
-          onChange={(e) => setTgl(e.target.value)}
-          onBlur={(e) => simpan({ tgl: e.target.value })}
         />
       </td>
     </tr>

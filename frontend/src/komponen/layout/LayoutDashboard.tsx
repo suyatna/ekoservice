@@ -1,18 +1,19 @@
 import { ReactNode, useState } from 'react';
 import { Sidebar } from './Sidebar';
 import { menuAdmin } from '@/rute/menu';
-import { Plus, Menu } from 'lucide-react';
+import { List, Plus, X } from '@phosphor-icons/react';
 
 interface LayoutDashboardProps {
   children: ReactNode;
   judulHalaman?: string;
   showTambah?: boolean;
+  tambahAktif?: boolean;
   onTambah?: () => void;
   searchSlot?: ReactNode;
   actionsSlot?: ReactNode;
 }
 
-export const LayoutDashboard = ({ children, judulHalaman, showTambah, onTambah, searchSlot, actionsSlot }: LayoutDashboardProps) => {
+export const LayoutDashboard = ({ children, judulHalaman, showTambah, tambahAktif, onTambah, searchSlot, actionsSlot }: LayoutDashboardProps) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
@@ -41,7 +42,7 @@ export const LayoutDashboard = ({ children, judulHalaman, showTambah, onTambah, 
                 onClick={() => setSidebarOpen(true)}
                 className="btn-bounce flex h-9 w-9 items-center justify-center rounded-lg bg-section text-teks transition hover:bg-panelHover lg:hidden"
               >
-                <Menu size={20} />
+                <List size={22} weight="fill" />
               </button>
               {judulHalaman && (
                 <p className="brand-text font-semibold shrink-0">{judulHalaman}</p>
@@ -52,9 +53,9 @@ export const LayoutDashboard = ({ children, judulHalaman, showTambah, onTambah, 
               {showTambah && (
                 <button
                   onClick={onTambah}
-                  className="btn-bounce flex h-9 w-9 items-center justify-center rounded-full bg-utama text-black transition hover:brightness-105 focus:outline-none focus:ring-2 focus:ring-utama/60 shrink-0"
+                  className="btn-bounce btn-icon-round flex h-10 w-10 items-center justify-center rounded-full bg-utama text-white transition hover:brightness-105 focus:outline-none focus:ring-2 focus:ring-utama/60 shrink-0"
                 >
-                  <Plus size={20} />
+                  {tambahAktif ? <X size={22} weight="fill" /> : <Plus size={22} weight="fill" />}
                 </button>
               )}
               {actionsSlot && <div className="shrink-0">{actionsSlot}</div>}

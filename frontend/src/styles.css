@@ -1,5 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Farro&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Koulen&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Squada+One&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -17,6 +17,7 @@
 html {
   font-size: 18px;
   scroll-padding-top: 84px;
+  scroll-behavior: smooth;
 }
 
 body {
@@ -38,10 +39,9 @@ h3,
 h4,
 h5,
 h6,
-button,
 .subtitle,
 .subjudul {
-  font-family: 'Koulen', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  font-family: 'Squada One', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
   letter-spacing: 0.01em;
   text-transform: uppercase;
 }
@@ -51,7 +51,7 @@ b,
 .font-semibold,
 .font-bold,
 .font-extrabold {
-  font-family: 'Koulen', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  font-family: 'Squada One', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
   font-size: 1.16em;
   text-transform: uppercase;
 }
@@ -92,7 +92,7 @@ h3.text-xl {
 #ringkasan .ringkasan-title,
 .cta-title,
 .brand-text {
-  font-family: 'Koulen', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif !important;
+  font-family: 'Squada One', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif !important;
   text-transform: uppercase !important;
 }
 
@@ -117,7 +117,22 @@ h3.text-xl {
 }
 
 button {
-  font-size: 1.08rem !important;
+  font-family: 'Farro', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif !important;
+  text-transform: none !important;
+  letter-spacing: 0 !important;
+  font-size: 0.88rem !important;
+}
+
+button *,
+button.font-semibold,
+button .font-semibold,
+button.font-bold,
+button .font-bold,
+button.font-extrabold,
+button .font-extrabold {
+  font-family: 'Farro', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif !important;
+  text-transform: none !important;
+  letter-spacing: 0 !important;
 }
 
 .hero-title {
@@ -163,7 +178,7 @@ button {
 .kartu .subjudul,
 .kartu .text-xs,
 .kartu .panel-kompak .text-sm {
-  font-family: 'Koulen', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif !important;
+  font-family: 'Squada One', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif !important;
   text-transform: uppercase !important;
 }
 
@@ -180,7 +195,7 @@ button {
 
 /* table styling */
 table thead th {
-  font-family: 'Koulen', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif !important;
+  font-family: 'Squada One', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif !important;
   text-transform: uppercase !important;
 }
 
@@ -192,7 +207,11 @@ table tbody span {
 }
 
 button {
-  font-size: 1.08rem !important;
+  font-size: 0.88rem !important;
+}
+
+.btn-bounce {
+  border-radius: 12px !important;
 }
 
 * {
@@ -219,7 +238,7 @@ input[type="date"],
 input[type="number"],
 textarea,
 select {
-  border: 1px solid #3D3D3D !important;
+  border: 1px solid #344246 !important;
 }
 
 input[type="text"]:focus,
@@ -229,7 +248,7 @@ input[type="date"]:focus,
 input[type="number"]:focus,
 textarea:focus,
 select:focus {
-  border-color: #22C55E !important;
+  border-color: #3678F4 !important;
 }
 
 .kartu {
@@ -240,10 +259,36 @@ select:focus {
   @apply rounded-md bg-section;
 }
 
-[data-lucide] {
-  width: 16px;
-  height: 16px;
-  stroke-width: 2.1;
+/* Radius komponen dibuat lebih tegas; tombol tetap mengikuti style tombol. */
+.rounded:not(button):not(.rounded-full),
+.rounded-md:not(button):not(.rounded-full),
+.rounded-lg:not(button):not(.rounded-full),
+.rounded-xl:not(button):not(.rounded-full),
+.kartu,
+.panel-kompak {
+  border-radius: 4px !important;
+}
+
+input.rounded-lg,
+select.rounded-lg,
+textarea.rounded-lg,
+input.rounded-md,
+select.rounded-md,
+textarea.rounded-md {
+  border-radius: 4px !important;
+}
+
+img.rounded:not(.rounded-full),
+img.rounded-md:not(.rounded-full),
+img.rounded-lg:not(.rounded-full),
+img.rounded-xl:not(.rounded-full),
+.galeri-item,
+.galeri-item img,
+.leaflet-container,
+.kartu .leaflet-container,
+iframe,
+canvas {
+  border-radius: 4px !important;
 }
 
 @keyframes softPulse {
@@ -281,6 +326,7 @@ select:focus {
 [data-reveal-auto] {
   opacity: 0;
   transform: translateY(18px);
+  will-change: opacity, transform;
   transition: opacity 620ms cubic-bezier(0.22, 1, 0.36, 1), transform 620ms cubic-bezier(0.22, 1, 0.36, 1);
   transition-delay: var(--reveal-delay, 0ms);
 }
@@ -289,6 +335,92 @@ select:focus {
 [data-reveal-auto].revealed {
   opacity: 1;
   transform: translateY(0);
+}
+
+[data-reveal] [data-motion-card] {
+  opacity: 0;
+  transform: translateY(16px) scale(0.98);
+  transition:
+    opacity 560ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 560ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+[data-reveal].revealed [data-motion-card] {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+.motion-card {
+  will-change: transform;
+  transition:
+    transform 260ms ease,
+    border-color 260ms ease,
+    background-color 260ms ease,
+    box-shadow 260ms ease;
+}
+
+.motion-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(54, 120, 244, 0.45);
+  box-shadow: 0 14px 32px rgba(0, 0, 0, 0.24);
+}
+
+.motion-icon {
+  transition: transform 260ms ease, color 260ms ease;
+}
+
+.motion-card:hover .motion-icon {
+  transform: translateY(-2px) scale(1.12);
+  color: #F4F7F8;
+}
+
+.motion-icon-only {
+  opacity: 0;
+  transform: translateY(8px) scale(0.92);
+  transition:
+    opacity 520ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 520ms cubic-bezier(0.22, 1, 0.36, 1),
+    color 260ms ease;
+}
+
+[data-reveal].revealed .motion-icon-only {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+.motion-icon-group:hover .motion-icon-only {
+  transform: translateY(-2px) scale(1.12);
+  color: #F4F7F8;
+}
+
+.hero-bg-motion {
+  will-change: transform;
+  transform: scale(1.04);
+  animation: heroBgDrift 18s ease-in-out infinite alternate;
+}
+
+@keyframes heroBgDrift {
+  from {
+    transform: scale(1.04) translate3d(0, 0, 0);
+  }
+  to {
+    transform: scale(1.09) translate3d(-10px, -8px, 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
 }
 
 .btn-bounce:hover {
@@ -340,9 +472,9 @@ select:focus {
   border: 1px solid rgba(255, 255, 255, 0.45);
   border-radius: 10px;
   padding: 8px 14px;
-  font-size: 1.08rem !important;
-  font-family: 'Koulen', sans-serif !important;
-  text-transform: uppercase !important;
+  font-size: 0.88rem !important;
+  font-family: 'Farro', sans-serif !important;
+  text-transform: none !important;
   color: #fff;
   background: rgba(9, 12, 16, 0.72);
 }
@@ -354,22 +486,86 @@ button.text-sm,
 button.text-base,
 button.text-lg,
 button.text-xl {
-  font-size: 1.08rem !important;
+  font-size: 0.88rem !important;
+  border-radius: 12px !important;
+}
+
+button,
+.kartu button,
+.panel-kompak button,
+button.btn-bounce,
+.kartu button.btn-bounce,
+.panel-kompak button.btn-bounce,
+button.font-semibold,
+.kartu button.font-semibold,
+.panel-kompak button.font-semibold,
+button .font-semibold,
+button.font-bold,
+.kartu button.font-bold,
+.panel-kompak button.font-bold,
+button .font-bold,
+button.font-extrabold,
+.kartu button.font-extrabold,
+.panel-kompak button.font-extrabold,
+button .font-extrabold {
+  font-family: 'Farro', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif !important;
+  text-transform: none !important;
+  letter-spacing: 0 !important;
+  font-size: 0.88rem !important;
+}
+
+.btn-bounce {
+  min-height: 48px;
+  height: 48px !important;
+}
+
+.btn-bounce:not(:has(svg:only-child)) {
+  width: 190px !important;
+  min-width: 190px;
+  max-width: 100%;
+}
+
+.btn-bounce:has(svg:only-child) {
+  width: 48px !important;
+  min-width: 48px;
+}
+
+.btn-icon-round {
   border-radius: 9999px !important;
 }
 
+.btn-fill {
+  width: 100% !important;
+  min-width: 100% !important;
+}
+
+.btn-map {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  width: auto !important;
+  min-width: 150px !important;
+  white-space: nowrap;
+}
+
 .estimasi-heading {
-  font-family: 'Koulen', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif !important;
+  font-family: 'Squada One', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif !important;
   text-transform: uppercase !important;
   font-size: 1.85rem !important;
   line-height: 1.08 !important;
 }
 
 .hero-title-utama {
-  font-family: 'Koulen', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif !important;
+  font-family: 'Squada One', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif !important;
   text-transform: uppercase !important;
   font-size: clamp(2.6rem, 6vw, 3.95rem) !important;
   line-height: 1.08 !important;
+  font-weight: 900 !important;
+  -webkit-text-stroke: 0.35px currentColor;
+  text-shadow:
+    0 1px 0 currentColor,
+    0 12px 28px rgba(0, 0, 0, 0.32);
 }
 
 @keyframes heroFadeIn {
@@ -401,6 +597,45 @@ button.text-xl {
 
 .font-farro {
   font-family: 'Farro', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+}
+
+.map-preview {
+  border: 1px solid #2A3639;
+  background: #111719;
+}
+
+.map-preview .leaflet-control-zoom {
+  overflow: hidden;
+  border: 1px solid #2A3639;
+  border-radius: 4px;
+}
+
+.map-preview .leaflet-control-zoom a {
+  width: 34px;
+  height: 34px;
+  border: 0;
+  background: #1D2527;
+  color: #F4F7F8;
+  line-height: 34px;
+}
+
+.map-preview .leaflet-control-zoom a:hover {
+  background: #242E31;
+  color: #F4F7F8;
+}
+
+.map-preview .leaflet-popup-content-wrapper,
+.map-preview .leaflet-popup-tip {
+  background: #1D2527;
+  color: #F4F7F8;
+  border: 1px solid #2A3639;
+  border-radius: 4px;
+}
+
+.map-preview .leaflet-popup-content {
+  margin: 10px 12px;
+  font-family: 'Farro', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  font-size: 0.78rem;
 }
 
 @media (max-width: 480px) {

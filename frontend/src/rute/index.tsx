@@ -2,6 +2,7 @@ import { Suspense, lazy, type ReactNode } from 'react';
 import { createBrowserRouter } from 'react-router-dom';
 import { PenjagaAuth, PenjagaAdmin } from './penjaga';
 import type { Role } from '@/types';
+import { HalamanErrorRoute } from '@/halaman/ErrorRoute';
 
 const Landing = lazy(() => import('@/halaman/publik/Landing').then((m) => ({ default: m.Landing })));
 const BookingPublik = lazy(() => import('@/halaman/publik/BookingPublik').then((m) => ({ default: m.default })));
@@ -18,24 +19,30 @@ const bungkusLazy = (node: ReactNode) => (
 );
 
 export const router = createBrowserRouter([
-  { path: '/', element: bungkusLazy(<Landing />) },
-  { path: '/booking', element: bungkusLazy(<BookingPublik />) },
-  { path: '/masuk', element: bungkusLazy(<Masuk />) },
   {
-    element: <PenjagaAuth />,
+    errorElement: <HalamanErrorRoute />,
     children: [
+      { path: '/', element: bungkusLazy(<Landing />) },
+      { path: '/booking', element: bungkusLazy(<BookingPublik />) },
+      { path: '/masuk', element: bungkusLazy(<Masuk />) },
       {
-        element: <PenjagaAdmin roles={['ADMIN'] as Role[]} />,
-        children: [{ path: '/admin/booking', element: bungkusLazy(<HalamanBooking />) }]
+        element: <PenjagaAuth />,
+        children: [
+          {
+            element: <PenjagaAdmin roles={['ADMIN'] as Role[]} />,
+            children: [{ path: '/admin/booking', element: bungkusLazy(<HalamanBooking />) }]
+          },
+          {
+            element: <PenjagaAdmin roles={['ADMIN'] as Role[]} />,
+            children: [{ path: '/admin/keuangan', element: bungkusLazy(<HalamanKeuangan />) }]
+          },
+          {
+            element: <PenjagaAdmin roles={['ADMIN'] as Role[]} />,
+            children: [{ path: '/admin/stok', element: bungkusLazy(<HalamanStok />) }]
+          }
+        ]
       },
-      {
-        element: <PenjagaAdmin roles={['ADMIN'] as Role[]} />,
-        children: [{ path: '/admin/keuangan', element: bungkusLazy(<HalamanKeuangan />) }]
-      },
-      {
-        element: <PenjagaAdmin roles={['ADMIN'] as Role[]} />,
-        children: [{ path: '/admin/stok', element: bungkusLazy(<HalamanStok />) }]
-      }
+      { path: '*', element: <HalamanErrorRoute /> }
     ]
   }
 ]);

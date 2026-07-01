@@ -3,8 +3,9 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { LayoutDashboard } from '@/komponen/layout/LayoutDashboard';
 import { FormSelect } from '@/komponen/form/FormSelect';
 import { FormInput } from '@/komponen/form/FormInput';
-import { Search, Loader2 } from 'lucide-react';
+import { CircleNotch, MagnifyingGlass } from '@phosphor-icons/react';
 import { bookingLayanan } from '@/layanan/booking';
+import { pesanErrorApi } from '@/layanan/api';
 import { kategoriOptions, statusGroupConfig } from '@/skema/booking';
 import { toast } from 'sonner';
 
@@ -46,7 +47,7 @@ export default function HalamanBooking() {
   const [filterKategori, setFilterKategori] = useState('');
   const [barisBaru, setBarisBaru] = useState<FormState | null>(null);
 
-  const { data, isLoading, isError } = useQuery({
+  const { data, isLoading, isError, error } = useQuery({
     queryKey: ['bookings', { search, filterStatus, filterKategori }],
     queryFn: () => {
       if (filterStatus && statusGroupConfig[filterStatus]) {
@@ -68,7 +69,7 @@ export default function HalamanBooking() {
       setBarisBaru(null);
       toast.success('Booking dibuat');
     },
-    onError: () => toast.error('Gagal buat booking'),
+    onError: (err) => toast.error(pesanErrorApi(err, 'Gagal buat booking')),
   });
 
   const hapusMutation = useMutation({
@@ -77,7 +78,7 @@ export default function HalamanBooking() {
       qc.invalidateQueries({ queryKey: ['bookings'] });
       toast.success('Booking dihapus');
     },
-    onError: () => toast.error('Gagal hapus booking'),
+    onError: (err) => toast.error(pesanErrorApi(err, 'Gagal hapus booking')),
   });
 
   const ubahMutation = useMutation({
@@ -86,7 +87,7 @@ export default function HalamanBooking() {
       qc.invalidateQueries({ queryKey: ['bookings'] });
       toast.success('Booking diupdate');
     },
-    onError: () => toast.error('Gagal update booking'),
+    onError: (err) => toast.error(pesanErrorApi(err, 'Gagal update booking')),
   });
 
   let bookings = data?.data ?? [];
@@ -110,11 +111,12 @@ export default function HalamanBooking() {
   return (
     <LayoutDashboard
       showTambah
-      onTambah={() => setBarisBaru(kosongBooking())}
+      tambahAktif={!!barisBaru}
+      onTambah={() => setBarisBaru((prev) => (prev ? null : kosongBooking()))}
       searchSlot={
         <div className="flex flex-1 flex-col gap-2 sm:flex-row sm:items-center sm:gap-3">
           <div className="relative w-full sm:flex-1">
-            <Search size={18} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-redup" />
+            <MagnifyingGlass size={22} weight="fill" className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-redup" />
             <input
               type="text"
               className="w-full bg-transparent pl-9 pr-3 py-2 text-sm text-teks placeholder:text-redup rounded-lg border border-borderHalus focus:outline-none focus:border-utama/60"
@@ -138,20 +140,16 @@ export default function HalamanBooking() {
         </div>
       }
     >
-      <div className="kartu overflow-x-auto">
+      <div className="kartu w-full overflow-x-auto overscroll-x-contain pb-2">
         {isLoading ? (
           <div className="flex flex-col items-center justify-center py-16 gap-3">
-            <Loader2 size={28} className="text-redup animate-spin" />
-            <p className="text-sm text-redup">Memuat data booking...</p>
+            <CircleNotch size={22} weight="fill" className="text-redup animate-spin" />
+            <p className="text-sm text-redup">Memuat data...</p>
           </div>
         ) : isError ? (
           <div className="flex flex-col items-center justify-center py-16">
-            <p className="text-sm text-bahaya">Gagal memuat data booking</p>
+            <p className="text-sm text-bahaya">{pesanErrorApi(error, 'Gagal memuat data')}</p>
             <button onClick={() => qc.invalidateQueries({ queryKey: ['bookings'] })} className="mt-2 text-xs text-utama hover:underline">Coba lagi</button>
-          </div>
-        ) : bookings.length === 0 && !barisBaru ? (
-          <div className="flex flex-col items-center justify-center py-16 text-center">
-            <p className="text-sm text-teks2">Tidak ada booking ditemukan</p>
           </div>
         ) : (
           <table className="min-w-[760px] text-sm table-fixed md:w-full">
@@ -163,20 +161,21 @@ export default function HalamanBooking() {
               <col className="w-1/5" />
             </colgroup>
             <thead>
-              <tr className="border-b border-[#2D2D2D]">
-                <th className="px-4 py-3 text-center text-xs font-semibold uppercase bg-utama text-black">Pelanggan</th>
-                <th className="px-4 py-3 text-center text-xs font-semibold uppercase bg-utama text-black">Service</th>
-                <th className="px-4 py-3 text-center text-xs font-semibold uppercase bg-utama text-black">No. WhatsApp</th>
-                <th className="px-4 py-3 text-center text-xs font-semibold uppercase bg-utama text-black">Status</th>
-                <th className="px-4 py-3 text-center text-xs font-semibold uppercase bg-utama text-black">Tanggal Booking</th>
+              <tr className="border-b border-[#2A3639]">
+                <th className="px-4 py-3 text-center text-xs font-semibold uppercase bg-utama text-white">Pelanggan</th>
+                <th className="px-4 py-3 text-center text-xs font-semibold uppercase bg-utama text-white">Tanggal Booking</th>
+                <th className="px-4 py-3 text-center text-xs font-semibold uppercase bg-utama text-white">Service</th>
+                <th className="px-4 py-3 text-center text-xs font-semibold uppercase bg-utama text-white">No. WhatsApp</th>
+                <th className="px-4 py-3 text-center text-xs font-semibold uppercase bg-utama text-white">Status</th>
               </tr>
             </thead>
             <tbody>
               {barisBaru && (
-                <tr className="border-b border-[#2D2D2D] bg-utama/5">
+                <tr className="border-b border-[#2A3639] bg-utama/5">
                   <td className="px-3 py-2">
                     <FormInput
                       value={barisBaru.nama}
+                      error={barisBaru.touched && barisBaru.nama.trim() === '' ? 'Nama wajib diisi' : undefined}
                       onChange={(e) => setBarisBaru({ ...barisBaru, nama: e.target.value, touched: true })}
                       onBlur={(e) => {
                         const next = { ...barisBaru, nama: e.target.value, touched: true };
@@ -187,12 +186,24 @@ export default function HalamanBooking() {
                     />
                   </td>
                   <td className="px-3 py-2">
+                    <FormInput
+                      type="date"
+                      value={barisBaru.tglBooking}
+                      error={barisBaru.touched && barisBaru.tglBooking === '' ? 'Tanggal wajib diisi' : undefined}
+                      onChange={(e) => setBarisBaru({ ...barisBaru, tglBooking: e.target.value, touched: true })}
+                      onBlur={(e) => {
+                        const next = { ...barisBaru, tglBooking: e.target.value, touched: true };
+                        setBarisBaru(next);
+                        cobaBuatBooking(next);
+                      }}
+                    />
+                  </td>
+                  <td className="px-3 py-2">
                     <FormSelect
                       value={barisBaru.kategori}
                       onChange={(e) => {
                         const next = { ...barisBaru, kategori: e.target.value, touched: true };
                         setBarisBaru(next);
-                        cobaBuatBooking(next);
                       }}
                     >
                       {ALL_KATEGORI.map((k) => (
@@ -203,6 +214,7 @@ export default function HalamanBooking() {
                   <td className="px-3 py-2">
                     <FormInput
                       value={barisBaru.noTelp}
+                      error={barisBaru.touched && barisBaru.noTelp.trim() === '' ? 'Nomor wajib diisi' : undefined}
                       onChange={(e) => setBarisBaru({ ...barisBaru, noTelp: e.target.value, touched: true })}
                       onBlur={(e) => {
                         const next = { ...barisBaru, noTelp: e.target.value, touched: true };
@@ -218,7 +230,6 @@ export default function HalamanBooking() {
                       onChange={(e) => {
                         const next = { ...barisBaru, status: e.target.value, touched: true };
                         setBarisBaru(next);
-                        cobaBuatBooking(next);
                       }}
                     >
                       {STATUS_GROUPS.map((g) => (
@@ -226,17 +237,14 @@ export default function HalamanBooking() {
                       ))}
                     </FormSelect>
                   </td>
-                  <td className="px-3 py-2">
-                    <FormInput
-                      type="date"
-                      value={barisBaru.tglBooking}
-                      onChange={(e) => setBarisBaru({ ...barisBaru, tglBooking: e.target.value, touched: true })}
-                      onBlur={(e) => {
-                        const next = { ...barisBaru, tglBooking: e.target.value, touched: true };
-                        setBarisBaru(next);
-                        cobaBuatBooking(next);
-                      }}
-                    />
+                </tr>
+              )}
+              {bookings.length === 0 && !barisBaru && (
+                <tr>
+                  <td colSpan={5} className="px-4 py-12 text-center">
+                    <p className="text-sm text-teks2" style={{ fontFamily: "'Farro', sans-serif", textTransform: 'none' }}>
+                      Data tidak tersedia
+                    </p>
                   </td>
                 </tr>
               )}
@@ -272,6 +280,10 @@ function BookingRow({ booking, ubahMutation, hapusMutation }: { booking: any; ub
       hapusMutation.mutate(booking.id);
       return;
     }
+    if (Number.isNaN(new Date(nextTglBooking).getTime())) {
+      toast.error('Tanggal booking tidak valid');
+      return;
+    }
 
     // Bangun object hanya dengan field yang terisi
     const data: Record<string, unknown> = {};
@@ -288,9 +300,12 @@ function BookingRow({ booking, ubahMutation, hapusMutation }: { booking: any; ub
   };
 
   return (
-    <tr className="border-b border-[#2D2D2D] hover:bg-[#161616] transition-colors">
+    <tr className="border-b border-[#2A3639] hover:bg-panelHover transition-colors">
       <td className="px-3 py-2">
         <FormInput value={nama} onChange={(e) => setNama(e.target.value)} onBlur={(e) => simpan({ nama: e.target.value })} />
+      </td>
+      <td className="px-3 py-2">
+        <FormInput type="date" value={tglBooking} onChange={(e) => setTglBooking(e.target.value)} onBlur={(e) => simpan({ tglBooking: e.target.value })} />
       </td>
       <td className="px-3 py-2">
         <FormSelect value={kategori} onChange={(e) => { const next = e.target.value; setKategori(next); simpan({ kategori: next }); }}>
@@ -308,9 +323,6 @@ function BookingRow({ booking, ubahMutation, hapusMutation }: { booking: any; ub
             <option key={g} value={g}>{getGroupLabel(g)}</option>
           ))}
         </FormSelect>
-      </td>
-      <td className="px-3 py-2">
-        <FormInput type="date" value={tglBooking} onChange={(e) => setTglBooking(e.target.value)} onBlur={(e) => simpan({ tglBooking: e.target.value })} />
       </td>
     </tr>
   );

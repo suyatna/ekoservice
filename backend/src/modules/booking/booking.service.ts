@@ -68,7 +68,7 @@ export async function getBookingById(id: string) {
   const booking = await prisma.booking.findUnique({
     where: { id },
     include: {
-      dibuatOleh: { select: { id: true, nama: true, email: true } },
+      dibuatOleh: { select: { id: true, nama: true } },
     },
   });
 

@@ -1,7 +1,7 @@
 import { prisma } from '../../shared/prisma.js';
 import { generateSparepartId, generateUUID } from '../../shared/id-generator.js';
 import { NotFoundError } from '../../shared/errors.js';
-export async function buatSparepart(data) {
+export async function buatSparepart(data, userId) {
     return prisma.sparepart.create({
         data: {
             id: generateUUID(),
@@ -10,6 +10,7 @@ export async function buatSparepart(data) {
             kategori: data.kategori,
             stok: data.stok,
             satuan: data.satuan,
+            ...(userId ? { dibuatOlehId: userId } : {}),
         },
     });
 }
@@ -38,7 +39,7 @@ export async function daftarSparepart(filter) {
             where,
             skip,
             take: limit,
-            orderBy: { nama: 'asc' },
+            orderBy: { dibuatDi: 'desc' },
         }),
         prisma.sparepart.count({ where }),
     ]);

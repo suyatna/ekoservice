@@ -4,7 +4,7 @@ import { NotFoundError } from '../../shared/errors.js';
 import { SkemaTransaksiBuat, SkemaTransaksiUbah, SkemaTransaksiFilter } from './transaksi.schemas.js';
 import { Decimal } from '@prisma/client/runtime/library';
 
-export async function buatTransaksi(data: SkemaTransaksiBuat) {
+export async function buatTransaksi(data: SkemaTransaksiBuat, userId?: string) {
   return prisma.transaksi.create({
     data: {
       id: generateUUID(),
@@ -12,6 +12,7 @@ export async function buatTransaksi(data: SkemaTransaksiBuat) {
       deskripsi: data.deskripsi,
       jenis: data.jenis,
       nominal: new Decimal(data.nominal),
+      ...(userId ? { dibuatOlehId: userId } : {}),
       ...(data.dibuatDi !== undefined ? { dibuatDi: new Date(data.dibuatDi) } : {}),
     },
   });

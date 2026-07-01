@@ -1,6 +1,6 @@
 import argon2 from 'argon2';
 import { prisma } from '../../shared/prisma.js';
-import { InvalidCredentialsError, EmailAlreadyExistsError, NotFoundError, TokenExpiredError, } from '../../shared/errors.js';
+import { InvalidCredentialsError, NotFoundError, TokenExpiredError, } from '../../shared/errors.js';
 import { generateUUID, generateRefreshToken, } from '../../shared/id-generator.js';
 // ──────────────────────────────────────────────────────────
 // Auth Service
@@ -34,37 +34,6 @@ async function hashToken(token) {
     const { createHash } = await import('crypto');
     return createHash('sha256').update(token).digest('hex');
 }
-// ── User Registration ────────────────────────────────────
-export async function daftar(data) {
-    const existing = await prisma.user.findUnique({
-        where: { email: data.email },
-    });
-    if (existing) {
-        throw new EmailAlreadyExistsError();
-    }
-    const hashedPassword = await hashPassword(data.password);
-    const user = await prisma.user.create({
-        data: {
-            id: generateUUID(),
-            nama: data.nama,
-            username: data.email.split('@')[0]?.toLowerCase() ?? null,
-            email: data.email,
-            password: hashedPassword,
-            role: 'ADMIN',
-            aktif: true,
-        },
-    });
-    return {
-        user: {
-            id: user.id,
-            nama: user.nama,
-            username: user.username,
-            email: user.email,
-            role: user.role,
-            aktif: user.aktif,
-        },
-    };
-}
 // ── User Login ────────────────────────────────────────────
 export async function masuk(username, password) {
     const user = await prisma.user.findFirst({
@@ -82,7 +51,6 @@ export async function masuk(username, password) {
             id: user.id,
             nama: user.nama,
             username: user.username,
-            email: user.email,
             role: user.role,
             aktif: user.aktif,
         },
@@ -96,7 +64,6 @@ export async function getUserById(id) {
             id: true,
             nama: true,
             username: true,
-            email: true,
             role: true,
             aktif: true,
         },
