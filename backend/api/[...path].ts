@@ -1,11 +1,11 @@
 import type { FastifyInstance } from 'fastify';
-import { buildApp } from '../src/app.js';
 
 let appPromise: Promise<FastifyInstance> | undefined;
 
 function getApp() {
   if (!appPromise) {
-    appPromise = buildApp().then(async (app) => {
+    appPromise = import('../src/app').then(async ({ buildApp }) => {
+      const app = await buildApp();
       await app.ready();
       return app;
     });
@@ -38,17 +38,24 @@ async function readBody(request: any) {
 }
 
 export default async function handler(request: any, response: any) {
-  const app = await getApp();
-  const result = await app.inject({
-    method: request.method,
-    url: normalizeUrl(request.url),
-    headers: request.headers,
-    payload: await readBody(request),
-  });
+  try {
+    const app = await getApp();
+    const result = await app.inject({
+      method: request.method,
+      url: normalizeUrl(request.url),
+      headers: request.headers,
+      payload: await readBody(request),
+    });
 
-  response.statusCode = result.statusCode;
-  Object.entries(result.headers).forEach(([key, value]) => {
-    if (value !== undefined) response.setHeader(key, value as any);
-  });
-  response.end(result.rawPayload ?? result.payload);
+    response.statusCode = result.statusCode;
+    Object.entries(result.headers).forEach(([key, value]) => {
+      if (value !== undefined) response.setHeader(key, value as any);
+    });
+    response.end(result.rawPayload ?? result.payload);
+  } catch (error) {
+    console.error('Vercel backend handler failed:', error);
+    response.statusCode = 500;
+    response.setHeader('content-type', 'application/json; charset=utf-8');
+    response.end(JSON.stringify({ message: 'Backend gagal dijalankan', code: 'INTERNAL_ERROR' }));
+  }
 }
