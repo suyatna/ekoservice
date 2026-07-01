@@ -2,6 +2,10 @@ import type { FastifyInstance } from 'fastify';
 import { buildApp } from '../dist/app.js';
 
 let appPromise: Promise<FastifyInstance> | undefined;
+const allowedOrigins = (process.env.ALLOWED_ORIGINS ?? '')
+  .split(',')
+  .map((origin) => origin.trim())
+  .filter(Boolean);
 
 function getApp() {
   if (!appPromise) {
@@ -39,6 +43,7 @@ async function readBody(request: any) {
 
 export default async function handler(request: any, response: any) {
   try {
+    const origin = request.headers.origin;
     const app = await getApp();
     const result = await app.inject({
       method: request.method,
@@ -51,6 +56,13 @@ export default async function handler(request: any, response: any) {
     Object.entries(result.headers).forEach(([key, value]) => {
       if (value !== undefined) response.setHeader(key, value as any);
     });
+
+    if (origin && allowedOrigins.includes(origin)) {
+      response.setHeader('Access-Control-Allow-Origin', origin);
+      response.setHeader('Access-Control-Allow-Credentials', 'true');
+      response.setHeader('Vary', 'Origin');
+    }
+
     response.end(result.rawPayload ?? result.payload);
   } catch (error) {
     console.error('Vercel backend handler failed:', error);
