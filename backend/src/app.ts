@@ -106,3 +106,45 @@ export async function buildApp() {
 
   return fastify;
 }
+
+let serverlessAppPromise: ReturnType<typeof buildApp> | undefined;
+
+function getServerlessApp() {
+  if (!serverlessAppPromise) {
+    serverlessAppPromise = buildApp().then(async (app) => {
+      await app.ready();
+      return app;
+    });
+  }
+  return serverlessAppPromise;
+}
+
+async function readServerlessBody(request: any) {
+  if (request.method === 'GET' || request.method === 'HEAD') return undefined;
+  if (request.body !== undefined) {
+    if (Buffer.isBuffer(request.body) || typeof request.body === 'string') return request.body;
+    return JSON.stringify(request.body);
+  }
+
+  const chunks: Buffer[] = [];
+  for await (const chunk of request) {
+    chunks.push(Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk));
+  }
+  return chunks.length > 0 ? Buffer.concat(chunks) : undefined;
+}
+
+export default async function handler(request: any, response: any) {
+  const app = await getServerlessApp();
+  const result = await app.inject({
+    method: request.method,
+    url: request.url || '/',
+    headers: request.headers,
+    payload: await readServerlessBody(request),
+  });
+
+  response.statusCode = result.statusCode;
+  Object.entries(result.headers).forEach(([key, value]) => {
+    if (value !== undefined) response.setHeader(key, value as any);
+  });
+  response.end(result.rawPayload ?? result.payload);
+}
