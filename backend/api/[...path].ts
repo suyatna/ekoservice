@@ -1,5 +1,5 @@
 import type { FastifyInstance } from 'fastify';
-import { buildApp } from '../src/app';
+import { buildApp } from '../dist/app.js';
 
 let appPromise: Promise<FastifyInstance> | undefined;
 
