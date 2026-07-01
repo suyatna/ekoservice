@@ -44,7 +44,7 @@ export async function buildApp() {
 
   // Global preHandler: API Key validation
   fastify.addHook('preHandler', async (request: any, reply: any) => {
-    if (request.url === '/health') return;
+    if (request.url.startsWith('/health')) return;
 
     // CSRF check: state-changing methods require valid Origin header
     const method = request.method;
