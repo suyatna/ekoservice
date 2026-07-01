@@ -1,11 +1,11 @@
 import type { FastifyInstance } from 'fastify';
+import { buildApp } from '../src/app';
 
 let appPromise: Promise<FastifyInstance> | undefined;
 
 function getApp() {
   if (!appPromise) {
-    appPromise = import('../src/app').then(async ({ buildApp }) => {
-      const app = await buildApp();
+    appPromise = buildApp().then(async (app) => {
       await app.ready();
       return app;
     });
